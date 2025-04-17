@@ -7,9 +7,36 @@ import defaultImg from "./imgs/default.png";
 import ds1Img from "./imgs/ds1.png";
 import ds2Img from "./imgs/ds2.jpg";
 import ds3Img from "./imgs/ds3.png";
+import {
+    bossNameTranslations,
+    locationTranslations,
+    soulDropTranslations,
+} from "./data/translations";
 
-const allBosses: Boss[] = bosses.flatMap((game) =>
-    game.bosses.map((boss) => ({ ...boss, game: game.game }))
+// Processar os dados para adicionar campos EN e PT
+const processedBosses: Boss[] = bosses.flatMap((game) =>
+    game.bosses.map((boss) => {
+        // Guardar o original como inglês
+        const nameEN = boss.name;
+        const locationEN = boss.location;
+        const soulDropEN = boss.soulDrop;
+
+        // Tentamos encontrar as traduções disponíveis
+        const namePT = bossNameTranslations[nameEN] || nameEN;
+        const locationPT = locationTranslations[locationEN] || locationEN;
+        const soulDropPT = soulDropTranslations[soulDropEN] || soulDropEN;
+
+        return {
+            ...boss,
+            game: game.game,
+            nameEN,
+            namePT,
+            locationEN,
+            locationPT,
+            soulDropEN,
+            soulDropPT,
+        };
+    })
 );
 
 // Função auxiliar para obter a imagem correta com base no nome do jogo
@@ -64,8 +91,8 @@ const getBossOfTheDay = (): Boss => {
         hash = (hash << 5) - hash + dateString.charCodeAt(i);
         hash = hash & hash;
     }
-    const index = Math.abs(hash) % allBosses.length;
-    return allBosses[index];
+    const index = Math.abs(hash) % processedBosses.length;
+    return processedBosses[index];
 };
 
 function App() {
@@ -145,12 +172,58 @@ function App() {
         localStorage.setItem("bossdleState", JSON.stringify(state));
     }, [guesses, gameOver, won, today, correctBoss.name]);
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setGuess(value);
+        if (value.length > 0) {
+            const guessedBossNames = guesses.map((g) => g.name.toLowerCase());
+            const filtered = processedBosses
+                .filter((b) => {
+                    // Buscar em todos os nomes disponíveis (inglês e português)
+                    const nameMatches = b.name
+                        .toLowerCase()
+                        .includes(value.toLowerCase());
+                    const nameENMatches =
+                        b.nameEN?.toLowerCase().includes(value.toLowerCase()) ||
+                        false;
+                    const namePTMatches =
+                        b.namePT?.toLowerCase().includes(value.toLowerCase()) ||
+                        false;
+
+                    // Verificar se já foi usado este palpite
+                    const alreadyGuessed = guessedBossNames.includes(
+                        b.name.toLowerCase()
+                    );
+
+                    return (
+                        (nameMatches || nameENMatches || namePTMatches) &&
+                        !alreadyGuessed
+                    );
+                })
+                .map((b) => {
+                    // Retornar o nome no idioma atual
+                    return language === "PT" && b.namePT ? b.namePT : b.name;
+                })
+                .slice(0, 5);
+            setSuggestions(filtered);
+        } else {
+            setSuggestions([]);
+        }
+    };
+
     const handleGuess = (guessValue: string) => {
         if (gameOver) return;
 
-        const selectedBoss = allBosses.find(
-            (b) => b.name.toLowerCase() === guessValue.toLowerCase()
+        // Procurar o chefe pelo nome em qualquer idioma
+        const selectedBoss = processedBosses.find(
+            (b) =>
+                b.name.toLowerCase() === guessValue.toLowerCase() ||
+                (b.namePT &&
+                    b.namePT.toLowerCase() === guessValue.toLowerCase()) ||
+                (b.nameEN &&
+                    b.nameEN.toLowerCase() === guessValue.toLowerCase())
         );
+
         if (!selectedBoss) {
             alert("Chefe inválido! Escolha um chefe da lista.");
             return;
@@ -179,31 +252,20 @@ function App() {
         }
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setGuess(value);
-        if (value.length > 0) {
-            const guessedBossNames = guesses.map((g) => g.name.toLowerCase());
-            const filtered = allBosses
-                .filter(
-                    (b) =>
-                        b.name.toLowerCase().includes(value.toLowerCase()) &&
-                        !guessedBossNames.includes(b.name.toLowerCase())
-                )
-                .map((b) => b.name)
-                .slice(0, 5);
-            setSuggestions(filtered);
-        } else {
-            setSuggestions([]);
-        }
-    };
-
     // Novo estado para controlar o modo de visualização
     const [viewMode, setViewMode] = useState<boolean>(false);
 
     // Função para mostrar a página inicial sem permitir novos palpites
     const handleViewInitialPage = () => {
         setViewMode(true);
+    };
+
+    // Novo estado para controlar o idioma
+    const [language, setLanguage] = useState<"EN" | "PT">("EN");
+
+    // Função para alternar o idioma
+    const toggleLanguage = () => {
+        setLanguage((prevLang) => (prevLang === "EN" ? "PT" : "EN"));
     };
 
     if (gameOver && won && !viewMode) {
@@ -264,6 +326,26 @@ function App() {
                     Adivinhe o chefe de Dark Souls do dia!
                 </p>
 
+                {/* Seletor de idioma */}
+                <div className="flex justify-center mb-4">
+                    <button
+                        className={`button mr-2 ${
+                            language === "EN" ? "bg-blue-600" : "bg-blue-800"
+                        }`}
+                        onClick={() => setLanguage("EN")}
+                    >
+                        English
+                    </button>
+                    <button
+                        className={`button ${
+                            language === "PT" ? "bg-blue-600" : "bg-blue-800"
+                        }`}
+                        onClick={() => setLanguage("PT")}
+                    >
+                        Português
+                    </button>
+                </div>
+
                 <div className="mb-6 relative">
                     <input
                         type="text"
@@ -271,7 +353,11 @@ function App() {
                         onChange={handleInputChange}
                         onKeyPress={handleKeyPress}
                         className="input"
-                        placeholder="Digite o nome do chefe..."
+                        placeholder={
+                            language === "PT"
+                                ? "Digite o nome do chefe..."
+                                : "Enter boss name..."
+                        }
                         disabled={gameOver}
                     />
                     {suggestions.length > 0 && (
@@ -296,15 +382,20 @@ function App() {
                         className="button mt-3"
                         disabled={gameOver}
                     >
-                        Enviar Palpite
+                        {language === "PT" ? "Enviar Palpite" : "Submit Guess"}
                     </button>
 
                     {/* Attempt counter below search bar */}
                     <p className="text-center mt-2 text-gray-300">
                         {guesses.length > 0 ? (
                             <span>
-                                {guesses.length} tentativa
-                                {guesses.length > 1 ? "s" : ""}
+                                {guesses.length}{" "}
+                                {language === "PT" ? "tentativa" : "attempt"}
+                                {guesses.length > 1
+                                    ? language === "PT"
+                                        ? "s"
+                                        : "s"
+                                    : ""}
                             </span>
                         ) : null}
                     </p>
@@ -315,47 +406,81 @@ function App() {
                     {/* Cabeçalho da coluna de imagem - fixado com largura exata */}
                     <div className="flex-shrink-0" style={{ width: "96px" }}>
                         <div className="grid-header h-10">
-                            <div className="wrapped-text">Imagem</div>
+                            <div className="wrapped-text">
+                                {language === "PT" ? "Imagem" : "Image"}
+                            </div>
                         </div>
                     </div>
                     {/* Cabeçalho das outras colunas */}
                     <div className="grid grid-cols-10 gap-2 flex-grow">
                         <div className="col-span-2 grid-header h-10">
-                            <div className="wrapped-text">Chefe</div>
+                            <div className="wrapped-text">
+                                {language === "PT" ? "Chefe" : "Boss"}
+                            </div>
                         </div>
                         <div className="col-span-2 grid-header h-10">
-                            <div className="wrapped-text">Jogo</div>
+                            <div className="wrapped-text">
+                                {language === "PT" ? "Jogo" : "Game"}
+                            </div>
                         </div>
                         <div className="col-span-2 grid-header h-10">
-                            <div className="wrapped-text">Localização</div>
+                            <div className="wrapped-text">
+                                {language === "PT" ? "Localização" : "Location"}
+                            </div>
                         </div>
                         <div className="col-span-1 grid-header h-10">
                             <div className="wrapped-text">DLC?</div>
                         </div>
                         <div className="col-span-1 grid-header h-10">
-                            <div className="wrapped-text">Opcional?</div>
+                            <div className="wrapped-text">
+                                {language === "PT" ? "Opcional?" : "Optional?"}
+                            </div>
                         </div>
                         <div className="col-span-2 grid-header h-10">
-                            <div className="wrapped-text">Drop de Alma</div>
+                            <div className="wrapped-text">
+                                {language === "PT"
+                                    ? "Drop de Alma"
+                                    : "Soul Drop"}
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Inverter a ordem para mostrar o palpite mais recente primeiro */}
                 {[...guesses].reverse().map((g, i) => (
-                    <GuessRow key={i} guess={g} correctBoss={correctBoss} />
+                    <GuessRow
+                        key={i}
+                        guess={g}
+                        correctBoss={correctBoss}
+                        language={language}
+                    />
                 ))}
-                <GuessRow guess={null} correctBoss={correctBoss} />
+                <GuessRow
+                    guess={null}
+                    correctBoss={correctBoss}
+                    language={language}
+                />
 
                 {gameOver && (
                     <div className="mt-6 text-center">
                         {won && (
                             <>
                                 <p className="text-2xl text-green-500">
-                                    Parabéns! Você acertou o chefe:{" "}
-                                    {correctBoss.name} em {guesses.length}{" "}
-                                    tentativa
-                                    {guesses.length > 1 ? "s" : ""}!
+                                    {language === "PT" ? (
+                                        <>
+                                            Parabéns! Você acertou o chefe:{" "}
+                                            {correctBoss.name} em{" "}
+                                            {guesses.length} tentativa
+                                            {guesses.length > 1 ? "s" : ""}!
+                                        </>
+                                    ) : (
+                                        <>
+                                            Congratulations! You got the boss:{" "}
+                                            {correctBoss.name} in{" "}
+                                            {guesses.length} attempt
+                                            {guesses.length > 1 ? "s" : ""}!
+                                        </>
+                                    )}
                                 </p>
                                 <img
                                     src={getGameImage(correctBoss.game)}
@@ -368,14 +493,18 @@ function App() {
                             </>
                         )}
                         <p className="mt-4 text-gray-300">
-                            Volte amanhã para um novo desafio!
+                            {language === "PT"
+                                ? "Volte amanhã para um novo desafio!"
+                                : "Come back tomorrow for a new challenge!"}
                         </p>
                         <div className="flex flex-col gap-2 mt-4">
                             <button
                                 onClick={handleViewInitialPage}
                                 className="button mt-4"
                             >
-                                Ver Estado Atual
+                                {language === "PT"
+                                    ? "Ver Estado Atual"
+                                    : "View Current State"}
                             </button>
                         </div>
                     </div>

@@ -8,40 +8,102 @@ import defaultImg from "../imgs/default.png";
 interface GuessRowProps {
     guess: Boss | null;
     correctBoss: Boss;
+    language: "EN" | "PT";
 }
 
 // Helper function to extract drop type from soulDrop string
 const getDropType = (soulDrop: string): string => {
-    if (soulDrop.includes("Arma")) return "Arma";
-    if (soulDrop.includes("Anel")) return "Anel";
-    if (soulDrop.includes("Magia")) return "Magia";
+    if (soulDrop.includes("Arma") || soulDrop.includes("Weapon")) return "Arma";
+    if (soulDrop.includes("Anel") || soulDrop.includes("Ring")) return "Anel";
+    if (
+        soulDrop.includes("Magia") ||
+        soulDrop.includes("Magic") ||
+        soulDrop.includes("Spell")
+    )
+        return "Magia";
     return "Nenhum";
+};
+
+// Função para obter o nome baseado no idioma
+const getLocalizedName = (boss: Boss | null, language: "EN" | "PT"): string => {
+    if (!boss) return "";
+
+    if (language === "PT" && boss.namePT) {
+        return boss.namePT;
+    }
+    if (language === "EN" && boss.nameEN) {
+        return boss.nameEN;
+    }
+    return boss.name;
+};
+
+// Função para obter a localização baseada no idioma
+const getLocalizedLocation = (
+    boss: Boss | null,
+    language: "EN" | "PT"
+): string => {
+    if (!boss) return "";
+
+    if (language === "PT" && boss.locationPT) {
+        return boss.locationPT;
+    }
+    if (language === "EN" && boss.locationEN) {
+        return boss.locationEN;
+    }
+    return boss.location;
+};
+
+// Função para obter o soul drop baseado no idioma
+const getLocalizedSoulDrop = (
+    boss: Boss | null,
+    language: "EN" | "PT"
+): string => {
+    if (!boss) return "";
+
+    if (language === "PT" && boss.soulDropPT) {
+        return boss.soulDropPT;
+    }
+    if (language === "EN" && boss.soulDropEN) {
+        return boss.soulDropEN;
+    }
+    return boss.soulDrop;
 };
 
 const getCellColor = (
     key: string,
     value: any,
     guess: Boss | null,
-    correctBoss: Boss
+    correctBoss: Boss,
+    language: "EN" | "PT"
 ): string => {
     if (!guess) return "bg-gray-700";
 
-    if (key === "name")
-        return value === correctBoss.name ? "bg-green-500" : "bg-red-500";
+    if (key === "name") {
+        const guessName = getLocalizedName(guess, language);
+        const correctName = getLocalizedName(correctBoss, language);
+        return guessName === correctName ? "bg-green-500" : "bg-red-500";
+    }
 
     // Special case for soulDrop - compare only the type
     if (key === "soulDrop") {
-        const guessDropType = getDropType(guess.soulDrop);
-        const correctDropType = getDropType(correctBoss.soulDrop);
+        const guessDrop = getLocalizedSoulDrop(guess, language);
+        const correctDrop = getLocalizedSoulDrop(correctBoss, language);
+        const guessDropType = getDropType(guessDrop);
+        const correctDropType = getDropType(correctDrop);
         return guessDropType === correctDropType
             ? "bg-green-500"
             : "bg-red-500";
     }
 
-    if (value === correctBoss[key as keyof Boss]) return "bg-green-500";
-    if (key === "location" && guess.game === correctBoss.game)
-        return "bg-yellow-500";
+    if (key === "location") {
+        const guessLocation = getLocalizedLocation(guess, language);
+        const correctLocation = getLocalizedLocation(correctBoss, language);
+        if (guessLocation === correctLocation) return "bg-green-500";
+        if (guess.game === correctBoss.game) return "bg-yellow-500";
+        return "bg-red-500";
+    }
 
+    if (value === correctBoss[key as keyof Boss]) return "bg-green-500";
     return "bg-red-500";
 };
 
@@ -57,7 +119,16 @@ const getGameImage = (game: string): string => {
     return ds1Img; // Default fallback
 };
 
-const GuessRow: React.FC<GuessRowProps> = ({ guess, correctBoss }) => {
+const GuessRow: React.FC<GuessRowProps> = ({
+    guess,
+    correctBoss,
+    language,
+}) => {
+    // Obter as versões localizadas dos dados
+    const localizedName = getLocalizedName(guess, language);
+    const localizedLocation = getLocalizedLocation(guess, language);
+    const localizedSoulDrop = getLocalizedSoulDrop(guess, language);
+
     return (
         <div className="mb-4 flex gap-2 items-center">
             {/* Image column on the left */}
@@ -65,7 +136,7 @@ const GuessRow: React.FC<GuessRowProps> = ({ guess, correctBoss }) => {
                 {guess && (
                     <img
                         src={guess.image || getGameImage(guess.game)}
-                        alt={guess.name}
+                        alt={localizedName}
                         className="w-24 h-24 object-cover rounded-md shadow-md"
                         onError={(
                             e: React.SyntheticEvent<HTMLImageElement, Event>
@@ -82,13 +153,14 @@ const GuessRow: React.FC<GuessRowProps> = ({ guess, correctBoss }) => {
                 <div
                     className={`col-span-2 grid-cell ${getCellColor(
                         "name",
-                        guess?.name,
+                        localizedName,
                         guess,
-                        correctBoss
+                        correctBoss,
+                        language
                     )}`}
-                    title={guess?.name || ""}
+                    title={localizedName || ""}
                 >
-                    <div className="wrapped-text">{guess?.name || ""}</div>
+                    <div className="wrapped-text">{localizedName || ""}</div>
                 </div>
 
                 {/* Jogo (2 colunas) */}
@@ -97,7 +169,8 @@ const GuessRow: React.FC<GuessRowProps> = ({ guess, correctBoss }) => {
                         "game",
                         guess?.game,
                         guess,
-                        correctBoss
+                        correctBoss,
+                        language
                     )}`}
                     title={guess?.game || ""}
                 >
@@ -108,13 +181,16 @@ const GuessRow: React.FC<GuessRowProps> = ({ guess, correctBoss }) => {
                 <div
                     className={`col-span-2 grid-cell ${getCellColor(
                         "location",
-                        guess?.location,
+                        localizedLocation,
                         guess,
-                        correctBoss
+                        correctBoss,
+                        language
                     )}`}
-                    title={guess?.location || ""}
+                    title={localizedLocation || ""}
                 >
-                    <div className="wrapped-text">{guess?.location || ""}</div>
+                    <div className="wrapped-text">
+                        {localizedLocation || ""}
+                    </div>
                 </div>
 
                 {/* DLC (1 coluna) */}
@@ -123,7 +199,8 @@ const GuessRow: React.FC<GuessRowProps> = ({ guess, correctBoss }) => {
                         "isDLC",
                         guess?.isDLC,
                         guess,
-                        correctBoss
+                        correctBoss,
+                        language
                     )}`}
                     title={
                         guess?.isDLC !== undefined
@@ -146,7 +223,8 @@ const GuessRow: React.FC<GuessRowProps> = ({ guess, correctBoss }) => {
                         "isOptional",
                         guess?.isOptional,
                         guess,
-                        correctBoss
+                        correctBoss,
+                        language
                     )}`}
                     title={
                         guess?.isOptional !== undefined
@@ -167,14 +245,15 @@ const GuessRow: React.FC<GuessRowProps> = ({ guess, correctBoss }) => {
                 <div
                     className={`col-span-2 grid-cell ${getCellColor(
                         "soulDrop",
-                        guess?.soulDrop,
+                        localizedSoulDrop,
                         guess,
-                        correctBoss
+                        correctBoss,
+                        language
                     )}`}
-                    title={guess ? guess.soulDrop : ""}
+                    title={localizedSoulDrop || ""}
                 >
                     <div className="wrapped-text">
-                        {guess ? getDropType(guess.soulDrop) : ""}
+                        {guess ? getDropType(localizedSoulDrop) : ""}
                     </div>
                 </div>
             </div>
