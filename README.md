@@ -2,7 +2,7 @@
 
 Um jogo de adivinhação de chefes da série Dark Souls, inspirado no Wordle.
 
-![Dark Souls Bossdle](https://raw.githubusercontent.com/kiminfodeveloper/bossdle/main/src/imgs/default.png)
+![Dark Souls Bossdle](https://bossdle.vercel.app/imgs/default.png)
 
 ## Funcionalidades
 
@@ -40,7 +40,12 @@ Um jogo de adivinhação de chefes da série Dark Souls, inspirado no Wordle.
     - **Drop de Alma**: Item especial obtido ao derrotar o chefe
 5. Continue adivinhando até acertar o chefe do dia!
 
-## Instalação e Execução
+## Jogar Online
+
+Você pode jogar o Bossdle online em:
+[https://bossdle.vercel.app/](https://bossdle.vercel.app/)
+
+## Instalação e Execução Local
 
 ```bash
 # Clone o repositório

@@ -1,0 +1,6 @@
+# Permita que todos os robôs de pesquisa indexem o site
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://bossdle.vercel.app/sitemap.xml 
