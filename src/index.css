@@ -1,0 +1,61 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-image: url("./imgs/background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.card {
+    @apply bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-xl p-6 max-w-4xl w-full;
+}
+
+.title {
+    @apply text-4xl font-bold text-center mb-4;
+    background: linear-gradient(to right, #d4af37, #f4e4bc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.button {
+    @apply py-2 px-4 bg-blue-800 hover:bg-blue-700 text-white font-semibold rounded-full transition-all duration-300 shadow-md;
+}
+
+.input {
+    @apply w-full p-3 bg-gray-800/90 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner;
+}
+
+.suggestions {
+    @apply absolute z-10 bg-gray-800/95 w-full rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg;
+}
+
+.suggestion-item {
+    @apply p-2 hover:bg-gray-700 cursor-pointer transition-colors duration-200;
+}
+
+.grid-header {
+    @apply p-2 text-center font-bold text-gray-200 bg-gray-800/50 rounded;
+}
+
+.grid-cell {
+    @apply p-2 text-center truncate;
+}
+
+.footer {
+    @apply bg-gray-900/80 backdrop-blur-md rounded-t-xl shadow-md p-4 w-full max-w-4xl mt-4;
+}

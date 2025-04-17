@@ -1,0 +1,697 @@
+[
+    {
+        "game": "Dark Souls 1",
+        "bosses": [
+            {
+                "name": "Asylum Demon",
+                "location": "Undead Asylum",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Asylum_Demon.jpg"
+            },
+            {
+                "name": "Taurus Demon",
+                "location": "Undead Burg",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Taurus_Demon.jpg"
+            },
+            {
+                "name": "Bell Gargoyles",
+                "location": "Undead Parish",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Bell_Gargoyles.jpg"
+            },
+            {
+                "name": "Moonlight Butterfly",
+                "location": "Darkroot Garden",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Moonlight_Butterfly.jpg"
+            },
+            {
+                "name": "Capra Demon",
+                "location": "Lower Undead Burg",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Capra_Demon.jpg"
+            },
+            {
+                "name": "Gaping Dragon",
+                "location": "Depths",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Gaping_Dragon.jpg"
+            },
+            {
+                "name": "Quelaag",
+                "location": "Blighttown",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Quelaag's Furysword)",
+                "image": "https://i.imgur.com/placeholder_Quelaag.jpg"
+            },
+            {
+                "name": "Iron Golem",
+                "location": "Sen's Fortress",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Iron_Golem.jpg"
+            },
+            {
+                "name": "Ornstein and Smough",
+                "location": "Anor Londo",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Dragonslayer Spear ou Smough's Hammer)",
+                "image": "https://i.imgur.com/placeholder_Ornstein_and_Smough.jpg"
+            },
+            {
+                "name": "Great Grey Wolf Sif",
+                "location": "Darkroot Garden",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Greatsword of Artorias)",
+                "image": "https://i.imgur.com/placeholder_Great_Grey_Wolf_Sif.jpg"
+            },
+            {
+                "name": "Four Kings",
+                "location": "New Londo Ruins",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Four Kings Bequeathed Lord Greatsword)",
+                "image": "https://i.imgur.com/placeholder_Four_Kings.jpg"
+            },
+            {
+                "name": "Seath the Scaleless",
+                "location": "Duke's Archives/Crystal Cave",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Moonlight Greatsword)",
+                "image": "https://i.imgur.com/placeholder_Seath_the_Scaleless.jpg"
+            },
+            {
+                "name": "Gravelord Nito",
+                "location": "Tomb of the Giants",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Gravelord_Nito.jpg"
+            },
+            {
+                "name": "Bed of Chaos",
+                "location": "Lost Izalith",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Bed_of_Chaos.jpg"
+            },
+            {
+                "name": "Gwyn, Lord of Cinder",
+                "location": "Kiln of the First Flame",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Gwyn_Lord_of_Cinder.jpg"
+            },
+            {
+                "name": "Crossbreed Priscilla",
+                "location": "Painted World of Ariamis",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Arma (Lifehunt Scythe)",
+                "image": "https://i.imgur.com/placeholder_Crossbreed_Priscilla.jpg"
+            },
+            {
+                "name": "Dark Sun Gwyndolin",
+                "location": "Anor Londo (optional)",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Dark_Sun_Gwyndolin.jpg"
+            },
+            {
+                "name": "Artorias the Abysswalker",
+                "location": "Oolacile Township",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Artorias_the_Abysswalker.jpg"
+            },
+            {
+                "name": "Black Dragon Kalameet",
+                "location": "Royal Wood",
+                "isDLC": true,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Black_Dragon_Kalameet.jpg"
+            },
+            {
+                "name": "Sanctuary Guardian",
+                "location": "Sanctuary Garden",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Sanctuary_Guardian.jpg"
+            },
+            {
+                "name": "Manus, Father of the Abyss",
+                "location": "Oolacile Township",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Magia (Pursuers)",
+                "image": "https://i.imgur.com/placeholder_Manus_Father_of_the_Abyss.jpg"
+            }
+        ]
+    },
+    {
+        "game": "Dark Souls 2",
+        "bosses": [
+            {
+                "name": "The Last Giant",
+                "location": "Forest of Fallen Giants",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_The_Last_Giant.jpg"
+            },
+            {
+                "name": "The Pursuer",
+                "location": "Forest of Fallen Giants",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Anel (Ring of Blades)",
+                "image": "https://i.imgur.com/placeholder_The_Pursuer.jpg"
+            },
+            {
+                "name": "Dragonrider",
+                "location": "Heide's Tower of Flame",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Dragonrider.jpg"
+            },
+            {
+                "name": "Old Dragonslayer",
+                "location": "Heide's Tower of Flame",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Old_Dragonslayer.jpg"
+            },
+            {
+                "name": "Flexile Sentry",
+                "location": "No-man's Wharf",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Flexile_Sentry.jpg"
+            },
+            {
+                "name": "Ruin Sentinels",
+                "location": "Lost Bastille",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Ruin_Sentinels.jpg"
+            },
+            {
+                "name": "The Lost Sinner",
+                "location": "Sinner's Rise",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Magia (Flame Weapon)",
+                "image": "https://i.imgur.com/placeholder_The_Lost_Sinner.jpg"
+            },
+            {
+                "name": "Belfry Gargoyles",
+                "location": "Belfry Luna",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Belfry_Gargoyles.jpg"
+            },
+            {
+                "name": "Executioner's Chariot",
+                "location": "Huntsman's Copse",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Magia (Dark Orb)",
+                "image": "https://i.imgur.com/placeholder_Executioners_Chariot.jpg"
+            },
+            {
+                "name": "Skeleton Lords",
+                "location": "Huntsman's Copse",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Skeleton_Lords.jpg"
+            },
+            {
+                "name": "Covetous Demon",
+                "location": "Earthen Peak",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Covetous_Demon.jpg"
+            },
+            {
+                "name": "Mytha, the Baneful Queen",
+                "location": "Earthen Peak",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Mytha_the_Baneful_Queen.jpg"
+            },
+            {
+                "name": "Smelter Demon",
+                "location": "Iron Keep",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Smelter_Demon.jpg"
+            },
+            {
+                "name": "Old Iron King",
+                "location": "Iron Keep",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Iron King Hammer)",
+                "image": "https://i.imgur.com/placeholder_Old_Iron_King.jpg"
+            },
+            {
+                "name": "Scorpioness Najka",
+                "location": "Shaded Woods",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Magia (Soul Shower)",
+                "image": "https://i.imgur.com/placeholder_Scorpioness_Najka.jpg"
+            },
+            {
+                "name": "Royal Rat Authority",
+                "location": "Doors of Pharros",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Royal_Rat_Authority.jpg"
+            },
+            {
+                "name": "Royal Rat Vanguard",
+                "location": "Grave of Saints",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Royal_Rat_Vanguard.jpg"
+            },
+            {
+                "name": "The Rotten",
+                "location": "Black Gulch",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_The_Rotten.jpg"
+            },
+            {
+                "name": "Duke's Dear Freja",
+                "location": "Brightstone Cove Tseldora",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Magia (Unleash Magic)",
+                "image": "https://i.imgur.com/placeholder_Dukes_Dear_Freja.jpg"
+            },
+            {
+                "name": "Looking Glass Knight",
+                "location": "Drangleic Castle",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Thorned Greatsword)",
+                "image": "https://i.imgur.com/placeholder_Looking_Glass_Knight.jpg"
+            },
+            {
+                "name": "Demon of Song",
+                "location": "Shrine of Amana",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Demon_of_Song.jpg"
+            },
+            {
+                "name": "Velstadt, the Royal Aegis",
+                "location": "Undead Crypt",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Magia (Sacred Oath)",
+                "image": "https://i.imgur.com/placeholder_Velstadt_the_Royal_Aegis.jpg"
+            },
+            {
+                "name": "Vendrick",
+                "location": "Undead Crypt",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Vendrick.jpg"
+            },
+            {
+                "name": "Guardian Dragon",
+                "location": "Aldia's Keep",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Guardian_Dragon.jpg"
+            },
+            {
+                "name": "Ancient Dragon",
+                "location": "Dragon Shrine",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Ancient_Dragon.jpg"
+            },
+            {
+                "name": "Giant Lord",
+                "location": "Memory of Jeigh",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Giant_Lord.jpg"
+            },
+            {
+                "name": "Nashandra",
+                "location": "Throne of Want",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Nashandra.jpg"
+            },
+            {
+                "name": "Throne Watcher and Throne Defender",
+                "location": "Throne of Want",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Throne_Watcher_and_Throne_Defender.jpg"
+            },
+            {
+                "name": "Darklurker",
+                "location": "Dark Chasm of Old",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Magia (Climax)",
+                "image": "https://i.imgur.com/placeholder_Darklurker.jpg"
+            },
+            {
+                "name": "Aldia, Scholar of the First Sin",
+                "location": "Throne of Want",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Aldia_Scholar_of_the_First_Sin.jpg"
+            },
+            {
+                "name": "Elana, the Squalid Queen",
+                "location": "Dragon's Sanctum",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Magia (Focus Souls)",
+                "image": "https://i.imgur.com/placeholder_Elana_the_Squalid_Queen.jpg"
+            },
+            {
+                "name": "Sinh, the Slumbering Dragon",
+                "location": "Dragon's Sanctum",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Sinh_the_Slumbering_Dragon.jpg"
+            },
+            {
+                "name": "Graverobber, Varg, and Cerah",
+                "location": "Cave of the Dead",
+                "isDLC": true,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Graverobber_Varg_and_Cerah.jpg"
+            },
+            {
+                "name": "Fume Knight",
+                "location": "Brume Tower",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Arma (Fume Ultra Greatsword)",
+                "image": "https://i.imgur.com/placeholder_Fume_Knight.jpg"
+            },
+            {
+                "name": "Blue Smelter Demon",
+                "location": "Iron Passage",
+                "isDLC": true,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Blue_Smelter_Demon.jpg"
+            },
+            {
+                "name": "Sir Alonne",
+                "location": "Memory of the Old Iron King",
+                "isDLC": true,
+                "isOptional": true,
+                "soulDrop": "Arma (Bewitched Alonne Sword)",
+                "image": "https://i.imgur.com/placeholder_Sir_Alonne.jpg"
+            },
+            {
+                "name": "Aava, the King's Pet",
+                "location": "Frozen Eleum Loyce",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Aava_the_Kings_Pet.jpg"
+            },
+            {
+                "name": "Burnt Ivory King",
+                "location": "Old Chaos",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Arma (Ivory King Ultra Greatsword)",
+                "image": "https://i.imgur.com/placeholder_Burnt_Ivory_King.jpg"
+            },
+            {
+                "name": "Lud and Zallen, the King's Pets",
+                "location": "Frigid Outskirts",
+                "isDLC": true,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Lud_and_Zallen_the_Kings_Pets.jpg"
+            }
+        ]
+    },
+    {
+        "game": "Dark Souls 3",
+        "bosses": [
+            {
+                "name": "Iudex Gundyr",
+                "location": "Cemetery of Ash",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Iudex_Gundyr.jpg"
+            },
+            {
+                "name": "Vordt of the Boreal Valley",
+                "location": "High Wall of Lothric",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Vordt_of_the_Boreal_Valley.jpg"
+            },
+            {
+                "name": "Curse-Rotted Greatwood",
+                "location": "Undead Settlement",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Arma (Hollowslayer Greatsword)",
+                "image": "https://i.imgur.com/placeholder_Curse_Rotted_Greatwood.jpg"
+            },
+            {
+                "name": "Crystal Sage",
+                "location": "Road of Sacrifices",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Magia (Crystal Hail)",
+                "image": "https://i.imgur.com/placeholder_Crystal_Sage.jpg"
+            },
+            {
+                "name": "Deacons of the Deep",
+                "location": "Cathedral of the Deep",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Magia (Deep Soul)",
+                "image": "https://i.imgur.com/placeholder_Deacons_of_the_Deep.jpg"
+            },
+            {
+                "name": "Abyss Watchers",
+                "location": "Farron Keep",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Farron Greatsword)",
+                "image": "https://i.imgur.com/placeholder_Abyss_Watchers.jpg"
+            },
+            {
+                "name": "High Lord Wolnir",
+                "location": "Catacombs of Carthus",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_High_Lord_Wolnir.jpg"
+            },
+            {
+                "name": "Old Demon King",
+                "location": "Smouldering Lake",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Arma (Old King's Great Hammer)",
+                "image": "https://i.imgur.com/placeholder_Old_Demon_King.jpg"
+            },
+            {
+                "name": "Pontiff Sulyvahn",
+                "location": "Irithyll of the Boreal Valley",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Greatsword of Judgment)",
+                "image": "https://i.imgur.com/placeholder_Pontiff_Sulyvahn.jpg"
+            },
+            {
+                "name": "Yhorm the Giant",
+                "location": "Profaned Capital",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Yhorm's Great Machete)",
+                "image": "https://i.imgur.com/placeholder_Yhorm_the_Giant.jpg"
+            },
+            {
+                "name": "Aldrich, Devourer of Gods",
+                "location": "Anor Londo",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Magia (Lifehunt Scythe)",
+                "image": "https://i.imgur.com/placeholder_Aldrich_Devourer_of_Gods.jpg"
+            },
+            {
+                "name": "Dancer of the Boreal Valley",
+                "location": "High Wall of Lothric",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Arma (Dancer's Enchanted Swords)",
+                "image": "https://i.imgur.com/placeholder_Dancer_of_the_Boreal_Valley.jpg"
+            },
+            {
+                "name": "Dragonslayer Armour",
+                "location": "Lothric Castle",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Dragonslayer_Armour.jpg"
+            },
+            {
+                "name": "Oceiros, the Consumed King",
+                "location": "Consumed King's Garden",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Magia (White Dragon Breath)",
+                "image": "https://i.imgur.com/placeholder_Oceiros_the_Consumed_King.jpg"
+            },
+            {
+                "name": "Champion Gundyr",
+                "location": "Untended Graves",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Champion_Gundyr.jpg"
+            },
+            {
+                "name": "Lothric, Younger Prince",
+                "location": "Grand Archives",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Magia (Holy Light)",
+                "image": "https://i.imgur.com/placeholder_Lothric_Younger_Prince.jpg"
+            },
+            {
+                "name": "Ancient Wyvern",
+                "location": "Archdragon Peak",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Ancient_Wyvern.jpg"
+            },
+            {
+                "name": "Nameless King",
+                "location": "Archdragon Peak",
+                "isDLC": false,
+                "isOptional": true,
+                "soulDrop": "Magia (Lightning Storm)",
+                "image": "https://i.imgur.com/placeholder_Nameless_King.jpg"
+            },
+            {
+                "name": "Soul of Cinder",
+                "location": "Kiln of the Flame",
+                "isDLC": false,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Soul_of_Cinder.jpg"
+            },
+            {
+                "name": "Sister Friede",
+                "location": "Painted World of Ariandel",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Arma (Friede's Great Scythe)",
+                "image": "https://i.imgur.com/placeholder_Sister_Friede.jpg"
+            },
+            {
+                "name": "Champion's Gravetender & Gravetender Greatwolf",
+                "location": "Painted World of Ariandel",
+                "isDLC": true,
+                "isOptional": true,
+                "soulDrop": "Arma (Valorheart)",
+                "image": "https://i.imgur.com/placeholder_Champions_Gravetender_and_Gravetender_Greatwolf.jpg"
+            },
+            {
+                "name": "Demon Prince",
+                "location": "The Dreg Heap",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Arma (Demon's Scar)",
+                "image": "https://i.imgur.com/placeholder_Demon_Prince.jpg"
+            },
+            {
+                "name": "Halflight, Spear of the Church",
+                "location": "The Ringed City",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Nenhum",
+                "image": "https://i.imgur.com/placeholder_Halflight_Spear_of_the_Church.jpg"
+            },
+            {
+                "name": "Darkeater Midir",
+                "location": "The Ringed City",
+                "isDLC": true,
+                "isOptional": true,
+                "soulDrop": "Magia (Old Moonlight)",
+                "image": "https://i.imgur.com/placeholder_Darkeater_Midir.jpg"
+            },
+            {
+                "name": "Slave Knight Gael",
+                "location": "The Ringed City",
+                "isDLC": true,
+                "isOptional": false,
+                "soulDrop": "Arma (Gael's Greatsword)",
+                "image": "https://i.imgur.com/placeholder_Slave_Knight_Gael.jpg"
+            }
+        ]
+    }
+]
