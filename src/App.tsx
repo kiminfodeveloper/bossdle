@@ -38,15 +38,24 @@ const getGameImage = (gameName: string): string => {
 const getBossOfTheDay = (): Boss => {
     // Get current date in Brasilia time (UTC-3)
     const now = new Date();
-    // Adjust to Brasilia time
+    // Adjust to Brasilia time using proper timezone calculation
+    // First convert to UTC by adding the local timezone offset
+    // Then subtract 3 hours (180 minutes) for Brasilia time (UTC-3)
     const brasiliaTime = new Date(
-        now.getTime() - (now.getTimezoneOffset() + 180) * 60000
+        now.getTime() + now.getTimezoneOffset() * 60000 - 3 * 60 * 60000
     );
+    console.log("Current Brasilia time:", brasiliaTime.toISOString());
+
     // Reset at 6 AM - if it's before 6 AM, use previous day
     const resetDate = new Date(brasiliaTime);
     if (resetDate.getHours() < 6) {
         resetDate.setDate(resetDate.getDate() - 1);
     }
+    console.log(
+        "Reset date used for boss selection:",
+        resetDate.toISOString().split("T")[0]
+    );
+
     // Use YYYY-MM-DD format for the seed
     const dateString = resetDate.toISOString().split("T")[0];
 
@@ -62,8 +71,9 @@ const getBossOfTheDay = (): Boss => {
 function App() {
     // Get current date in Brasilia time for state management
     const now = new Date();
+    // Use the same correct calculation for Brasilia time
     const brasiliaTime = new Date(
-        now.getTime() - (now.getTimezoneOffset() + 180) * 60000
+        now.getTime() + now.getTimezoneOffset() * 60000 - 3 * 60 * 60000
     );
     const resetDate = new Date(brasiliaTime);
     if (resetDate.getHours() < 6) {
@@ -71,15 +81,33 @@ function App() {
     }
     const today = resetDate.toISOString().split("T")[0];
 
+    // Para fins de diagnóstico
+    console.log("Current Brasilia time:", brasiliaTime.toISOString());
+    console.log("Date used for boss selection:", today);
+
     const correctBoss: Boss = getBossOfTheDay();
+
+    // Estado para armazenar o chefe anterior
+    const [previousBoss, setPreviousBoss] = useState<string>("");
 
     const [guess, setGuess] = useState<string>("");
     const [guesses, setGuesses] = useState<Boss[]>(() => {
         const savedState = localStorage.getItem("bossdleState");
         if (savedState) {
-            const { lastPlayedDate, guesses } = JSON.parse(savedState);
+            const { lastPlayedDate, guesses, lastBoss } =
+                JSON.parse(savedState);
+
+            // Se a data for diferente, começar um novo jogo
             if (lastPlayedDate === today) {
                 return guesses;
+            } else {
+                // Se for um novo dia, salvar o chefe anterior
+                if (lastBoss) {
+                    setPreviousBoss(lastBoss);
+                }
+                // Limpar o localStorage para o novo dia
+                localStorage.removeItem("bossdleState");
+                return [];
             }
         }
         return [];
@@ -112,9 +140,10 @@ function App() {
             guesses,
             gameOver,
             won,
+            lastBoss: correctBoss.name, // Armazenar o nome do chefe atual para histórico
         };
         localStorage.setItem("bossdleState", JSON.stringify(state));
-    }, [guesses, gameOver, won, today]);
+    }, [guesses, gameOver, won, today, correctBoss.name]);
 
     const handleGuess = (guessValue: string) => {
         if (gameOver) return;
@@ -169,11 +198,24 @@ function App() {
         }
     };
 
-    if (gameOver && won) {
+    // Novo estado para controlar o modo de visualização
+    const [viewMode, setViewMode] = useState<boolean>(false);
+
+    // Função para mostrar a página inicial sem permitir novos palpites
+    const handleViewInitialPage = () => {
+        setViewMode(true);
+    };
+
+    if (gameOver && won && !viewMode) {
         return (
             <div className="flex flex-col items-center min-h-screen justify-between">
                 <div className="card">
                     <h1 className="title">Dark Souls Bossdle</h1>
+                    {previousBoss && (
+                        <p className="text-sm mb-2 text-center text-gray-400">
+                            Chefe do dia anterior: {previousBoss}#1
+                        </p>
+                    )}
                     <p className="text-xl mb-4 text-center">
                         Você já jogou hoje! O chefe era:{" "}
                         <strong>{correctBoss.name}</strong>.
@@ -195,12 +237,14 @@ function App() {
                     <p className="mt-4 text-center text-gray-300">
                         Volte amanhã para um novo desafio!
                     </p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="button mt-4"
-                    >
-                        Ver Estado Atual
-                    </button>
+                    <div className="flex flex-col gap-2 mt-4">
+                        <button
+                            onClick={handleViewInitialPage}
+                            className="button"
+                        >
+                            Ver Estado Atual
+                        </button>
+                    </div>
                 </div>
                 <Footer />
             </div>
@@ -211,6 +255,11 @@ function App() {
         <div className="flex flex-col items-center min-h-screen justify-between">
             <div className="card">
                 <h1 className="title">Dark Souls Bossdle</h1>
+                {previousBoss && (
+                    <p className="text-sm mb-2 text-center text-gray-400">
+                        Chefe do dia anterior: {previousBoss}#1
+                    </p>
+                )}
                 <p className="text-center mb-4 text-gray-300">
                     Adivinhe o chefe de Dark Souls do dia!
                 </p>
@@ -261,16 +310,39 @@ function App() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-6 gap-2 mb-2">
-                    <div className="grid-header">Chefe</div>
-                    <div className="grid-header">Jogo</div>
-                    <div className="grid-header">Localização</div>
-                    <div className="grid-header">DLC?</div>
-                    <div className="grid-header">Opcional?</div>
-                    <div className="grid-header">Drop de Alma</div>
+                {/* Cabeçalho */}
+                <div className="flex gap-2 mb-2">
+                    {/* Cabeçalho da coluna de imagem - fixado com largura exata */}
+                    <div className="flex-shrink-0" style={{ width: "96px" }}>
+                        <div className="grid-header h-10">
+                            <div className="wrapped-text">Imagem</div>
+                        </div>
+                    </div>
+                    {/* Cabeçalho das outras colunas */}
+                    <div className="grid grid-cols-10 gap-2 flex-grow">
+                        <div className="col-span-2 grid-header h-10">
+                            <div className="wrapped-text">Chefe</div>
+                        </div>
+                        <div className="col-span-2 grid-header h-10">
+                            <div className="wrapped-text">Jogo</div>
+                        </div>
+                        <div className="col-span-2 grid-header h-10">
+                            <div className="wrapped-text">Localização</div>
+                        </div>
+                        <div className="col-span-1 grid-header h-10">
+                            <div className="wrapped-text">DLC?</div>
+                        </div>
+                        <div className="col-span-1 grid-header h-10">
+                            <div className="wrapped-text">Opcional?</div>
+                        </div>
+                        <div className="col-span-2 grid-header h-10">
+                            <div className="wrapped-text">Drop de Alma</div>
+                        </div>
+                    </div>
                 </div>
 
-                {guesses.map((g, i) => (
+                {/* Inverter a ordem para mostrar o palpite mais recente primeiro */}
+                {[...guesses].reverse().map((g, i) => (
                     <GuessRow key={i} guess={g} correctBoss={correctBoss} />
                 ))}
                 <GuessRow guess={null} correctBoss={correctBoss} />
@@ -298,12 +370,14 @@ function App() {
                         <p className="mt-4 text-gray-300">
                             Volte amanhã para um novo desafio!
                         </p>
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="button mt-4"
-                        >
-                            Ver Estado Atual
-                        </button>
+                        <div className="flex flex-col gap-2 mt-4">
+                            <button
+                                onClick={handleViewInitialPage}
+                                className="button mt-4"
+                            >
+                                Ver Estado Atual
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>

@@ -20,7 +20,7 @@ body {
 }
 
 .card {
-    @apply bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-xl p-6 max-w-4xl w-full;
+    @apply bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-xl p-6 w-[90%] max-w-7xl mx-auto;
 }
 
 .title {
@@ -49,11 +49,22 @@ body {
 }
 
 .grid-header {
-    @apply p-2 text-center font-bold text-gray-200 bg-gray-800/50 rounded;
+    @apply p-2 text-center font-bold text-gray-200 bg-gray-800/50 rounded overflow-hidden min-h-[40px] flex items-center justify-center w-full;
 }
 
 .grid-cell {
-    @apply p-2 text-center truncate;
+    @apply p-2 text-center break-words h-24 flex items-center justify-center;
+}
+
+.wrapped-text {
+    @apply break-words whitespace-normal text-sm;
+    word-wrap: break-word;
+    hyphens: auto;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 
 .footer {
