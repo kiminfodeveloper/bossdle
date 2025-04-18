@@ -95,6 +95,12 @@ const getBossOfTheDay = (): Boss => {
     return processedBosses[index];
 };
 
+// Função para obter um boss aleatório para o minigame de imagem
+const getRandomBoss = (): Boss => {
+    const randomIndex = Math.floor(Math.random() * processedBosses.length);
+    return processedBosses[randomIndex];
+};
+
 function App() {
     // Get current date in Brasilia time for state management
     const now = new Date();
@@ -261,6 +267,66 @@ function App() {
     // Novo estado para controlar o modo de visualização
     const [viewMode, setViewMode] = useState<boolean>(false);
 
+    // Novo estado para controlar o minigame de imagem
+    const [imageGameMode, setImageGameMode] = useState<boolean>(false);
+    const [imageBoss, setImageBoss] = useState<Boss | null>(null);
+    const [imageGuesses, setImageGuesses] = useState<string[]>([]);
+    const [imageGameOver, setImageGameOver] = useState<boolean>(false);
+    const [imageGameWon, setImageGameWon] = useState<boolean>(false);
+    const [zoomLevel, setZoomLevel] = useState<number>(8); // Níveis de zoom (8=mais zoom, ajustado para ser mais próximo)
+
+    // Função para iniciar o minigame de imagem
+    const handleStartImageGame = () => {
+        setImageBoss(getRandomBoss());
+        setImageGuesses([]);
+        setImageGameMode(true);
+        setImageGameOver(false);
+        setImageGameWon(false);
+        setZoomLevel(8); // Zoom inicial mais próximo
+    };
+
+    // Função para lidar com palpites no minigame de imagem
+    const handleImageGuess = (guessValue: string) => {
+        if (imageGameOver) return;
+
+        // Verificar se o palpite já foi feito
+        if (imageGuesses.includes(guessValue)) {
+            alert("Você já tentou este chefe!");
+            return;
+        }
+
+        // Adicionar o palpite à lista
+        const newGuesses = [...imageGuesses, guessValue];
+        setImageGuesses(newGuesses);
+        setGuess("");
+        setSuggestions([]);
+
+        // Verificar se o palpite está correto
+        if (
+            imageBoss &&
+            (guessValue.toLowerCase() === imageBoss.name.toLowerCase() ||
+                (imageBoss.namePT &&
+                    guessValue.toLowerCase() ===
+                        imageBoss.namePT.toLowerCase()) ||
+                (imageBoss.nameEN &&
+                    guessValue.toLowerCase() ===
+                        imageBoss.nameEN.toLowerCase()))
+        ) {
+            setImageGameOver(true);
+            setImageGameWon(true);
+        } else {
+            // Diminuir o zoom após cada palpite errado, de forma mais suave
+            // Continuar reduzindo o zoom sem limite mínimo
+            setZoomLevel(Math.max(zoomLevel - 0.8, 0.5)); // Diminui o zoom mas mantém um mínimo de 0.5 para não ficar muito distante
+        }
+    };
+
+    // Função para voltar ao estado inicial
+    const handleGoBack = () => {
+        setViewMode(false);
+        setImageGameMode(false);
+    };
+
     // Função para mostrar a página inicial sem permitir novos palpites
     const handleViewInitialPage = () => {
         setViewMode(true);
@@ -274,6 +340,265 @@ function App() {
         setLanguage((prevLang) => (prevLang === "EN" ? "PT" : "EN"));
     };
 
+    if (imageGameMode) {
+        return (
+            <div className="flex flex-col items-center min-h-screen justify-between">
+                <div className="card">
+                    <h1 className="title">
+                        {language === "PT"
+                            ? "Adivinhe o Chefe pela Imagem"
+                            : "Guess the Boss by Image"}
+                    </h1>
+                    <p className="text-center mb-4 text-gray-300">
+                        {language === "PT"
+                            ? "Tente adivinhar qual chefe é mostrado na imagem ampliada."
+                            : "Try to guess which boss is shown in the zoomed image."}
+                    </p>
+
+                    {/* Imagem com zoom */}
+                    {imageBoss && (
+                        <div className="relative w-64 h-64 mx-auto overflow-hidden rounded-lg border-2 border-gray-700 mb-4">
+                            <img
+                                src={imageBoss.image}
+                                alt="???"
+                                className="absolute w-auto h-auto min-w-full min-h-full"
+                                style={{
+                                    transform: `scale(${zoomLevel})`,
+                                    transformOrigin: "center center",
+                                    transition: "transform 0.5s ease-in-out",
+                                }}
+                                onError={(e) => {
+                                    e.currentTarget.src = getGameImage(
+                                        imageBoss.game
+                                    );
+                                }}
+                            />
+                        </div>
+                    )}
+
+                    {/* Status do jogo */}
+                    <div className="mb-2 text-center">
+                        <p className="text-gray-300">
+                            {language === "PT" ? "Tentativas: " : "Attempts: "}
+                            {imageGuesses.length}
+                        </p>
+                    </div>
+
+                    {/* Input para palpites */}
+                    {!imageGameOver && (
+                        <div className="mb-6 relative">
+                            <input
+                                type="text"
+                                value={guess}
+                                onChange={(e) => {
+                                    // Lógica específica para o minigame de imagem
+                                    const value = e.target.value;
+                                    setGuess(value);
+                                    if (value.length > 0) {
+                                        // Filtrar bosses já tentados no minigame
+                                        const filteredBosses = processedBosses
+                                            .filter((b) => {
+                                                // Buscar em todos os nomes disponíveis (inglês e português)
+                                                const nameMatches = b.name
+                                                    .toLowerCase()
+                                                    .includes(
+                                                        value.toLowerCase()
+                                                    );
+                                                const nameENMatches =
+                                                    b.nameEN
+                                                        ?.toLowerCase()
+                                                        .includes(
+                                                            value.toLowerCase()
+                                                        ) || false;
+                                                const namePTMatches =
+                                                    b.namePT
+                                                        ?.toLowerCase()
+                                                        .includes(
+                                                            value.toLowerCase()
+                                                        ) || false;
+
+                                                // Verificar se já foi usado este palpite no minigame
+                                                const alreadyGuessed =
+                                                    imageGuesses.some(
+                                                        (guessName) =>
+                                                            guessName.toLowerCase() ===
+                                                                b.name.toLowerCase() ||
+                                                            (b.nameEN &&
+                                                                guessName.toLowerCase() ===
+                                                                    b.nameEN.toLowerCase()) ||
+                                                            (b.namePT &&
+                                                                guessName.toLowerCase() ===
+                                                                    b.namePT.toLowerCase())
+                                                    );
+
+                                                return (
+                                                    (nameMatches ||
+                                                        nameENMatches ||
+                                                        namePTMatches) &&
+                                                    !alreadyGuessed
+                                                );
+                                            })
+                                            .slice(0, 5);
+
+                                        // Transformar para incluir o objeto boss completo
+                                        const suggestionItems =
+                                            filteredBosses.map((boss) => ({
+                                                name:
+                                                    language === "PT" &&
+                                                    boss.namePT
+                                                        ? boss.namePT
+                                                        : boss.name,
+                                                boss: boss,
+                                            }));
+
+                                        setSuggestions(suggestionItems);
+                                    } else {
+                                        setSuggestions([]);
+                                    }
+                                }}
+                                onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                        if (suggestions.length > 0) {
+                                            handleImageGuess(
+                                                suggestions[0].name
+                                            );
+                                        } else if (guess) {
+                                            handleImageGuess(guess);
+                                        }
+                                    }
+                                }}
+                                className="input"
+                                placeholder={
+                                    language === "PT"
+                                        ? "Digite o nome do chefe..."
+                                        : "Enter boss name..."
+                                }
+                            />
+                            {suggestions.length > 0 && (
+                                <ul className="suggestions">
+                                    {suggestions.map((suggestion) => (
+                                        <li
+                                            key={suggestion.name}
+                                            className="suggestion-item flex items-center p-2"
+                                            onClick={() => {
+                                                setGuess(suggestion.name);
+                                                setSuggestions([]);
+                                                handleImageGuess(
+                                                    suggestion.name
+                                                );
+                                            }}
+                                        >
+                                            <img
+                                                src={suggestion.boss.image}
+                                                alt={suggestion.name}
+                                                className="w-8 h-8 mr-2 rounded-full object-cover border border-gray-700 shadow-sm"
+                                                onError={(e) => {
+                                                    e.currentTarget.src =
+                                                        getGameImage(
+                                                            suggestion.boss.game
+                                                        );
+                                                }}
+                                            />
+                                            <span>{suggestion.name}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                            <button
+                                onClick={() => handleImageGuess(guess)}
+                                className="button mt-3"
+                            >
+                                {language === "PT"
+                                    ? "Enviar Palpite"
+                                    : "Submit Guess"}
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Lista de palpites */}
+                    {imageGuesses.length > 0 && (
+                        <div className="mt-4 mb-4">
+                            <h3 className="text-lg font-semibold text-gray-200 mb-2">
+                                {language === "PT"
+                                    ? "Palpites anteriores:"
+                                    : "Previous guesses:"}
+                            </h3>
+                            <ul className="bg-gray-800 rounded-lg p-3 divide-y divide-gray-700 shadow-inner">
+                                {[...imageGuesses]
+                                    .reverse()
+                                    .map((guessName, index) => (
+                                        <li
+                                            key={index}
+                                            className={`py-2 px-1 ${
+                                                index === 0
+                                                    ? "text-yellow-300 font-semibold"
+                                                    : "text-gray-300"
+                                            } flex items-center`}
+                                        >
+                                            <span className="inline-block w-5 text-right mr-2 text-gray-500">
+                                                {imageGuesses.length - index}.
+                                            </span>
+                                            {guessName}
+                                        </li>
+                                    ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    {/* Resultado do jogo */}
+                    {imageGameOver && (
+                        <div className="mt-6 text-center">
+                            {imageGameWon ? (
+                                <p className="text-2xl text-green-500">
+                                    {language === "PT"
+                                        ? `Parabéns! Você acertou: ${imageBoss?.name}`
+                                        : `Congratulations! You got it right: ${imageBoss?.name}`}
+                                </p>
+                            ) : (
+                                <p className="text-2xl text-red-500">
+                                    {language === "PT"
+                                        ? `Você não acertou! O chefe era: ${imageBoss?.name}`
+                                        : `You didn't get it! The boss was: ${imageBoss?.name}`}
+                                </p>
+                            )}
+
+                            {imageBoss && (
+                                <img
+                                    src={imageBoss.image}
+                                    alt={imageBoss.name}
+                                    className="mx-auto mt-4 max-w-xs rounded-lg shadow-md"
+                                    onError={(e) => {
+                                        e.currentTarget.src = getGameImage(
+                                            imageBoss.game
+                                        );
+                                    }}
+                                />
+                            )}
+
+                            <div className="flex gap-2 justify-center mt-4">
+                                <button
+                                    onClick={handleStartImageGame}
+                                    className="button"
+                                >
+                                    {language === "PT"
+                                        ? "Jogar Novamente"
+                                        : "Play Again"}
+                                </button>
+                                <button
+                                    onClick={handleGoBack}
+                                    className="button"
+                                >
+                                    {language === "PT" ? "Voltar" : "Go Back"}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+
     if (gameOver && won && !viewMode) {
         return (
             <div className="flex flex-col items-center min-h-screen justify-between">
@@ -281,7 +606,7 @@ function App() {
                     <h1 className="title">Dark Souls Bossdle</h1>
                     {previousBoss && (
                         <p className="text-sm mb-2 text-center text-gray-400">
-                            Chefe do dia anterior: {previousBoss}#1
+                            Chefe do dia anterior: {previousBoss}
                         </p>
                     )}
                     <p className="text-xl mb-4 text-center">
@@ -307,12 +632,20 @@ function App() {
                     <p className="mt-4 text-center text-gray-300">
                         Volte amanhã para um novo desafio!
                     </p>
-                    <div className="flex flex-col gap-2 mt-4">
+                    <div className="flex flex-wrap gap-2 mt-4 justify-center">
                         <button
                             onClick={handleViewInitialPage}
                             className="button"
                         >
                             Ver Estado Atual
+                        </button>
+                        <button
+                            onClick={handleStartImageGame}
+                            className="button"
+                        >
+                            {language === "PT"
+                                ? "Adivinhe o Chefe pela Imagem"
+                                : "Guess the Boss by Image"}
                         </button>
                     </div>
                 </div>
@@ -517,14 +850,22 @@ function App() {
                                 ? "Volte amanhã para um novo desafio!"
                                 : "Come back tomorrow for a new challenge!"}
                         </p>
-                        <div className="flex flex-col gap-2 mt-4">
+                        <div className="flex flex-wrap gap-2 mt-4 justify-center">
                             <button
                                 onClick={handleViewInitialPage}
-                                className="button mt-4"
+                                className="button"
                             >
                                 {language === "PT"
                                     ? "Ver Estado Atual"
                                     : "View Current State"}
+                            </button>
+                            <button
+                                onClick={handleStartImageGame}
+                                className="button"
+                            >
+                                {language === "PT"
+                                    ? "Adivinhe o Chefe pela Imagem"
+                                    : "Guess the Boss by Image"}
                             </button>
                         </div>
                     </div>
