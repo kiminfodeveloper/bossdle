@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import GuessRow from "./components/GuessRow";
 import Footer from "./components/Footer";
 import bosses from "./data/bosses.json";
+import eldenBosses from "./data/bosseselden.json";
 import { Boss } from "./types/boss";
 import defaultImg from "./imgs/default.png";
 import ds1Img from "./imgs/ds1.png";
 import ds2Img from "./imgs/ds2.jpg";
 import ds3Img from "./imgs/ds3.png";
+import endelRingImg from "./imgs/endelring.webp";
 import iconImg from "./imgs/icon.webp";
 import {
     bossNameTranslations,
@@ -48,7 +50,7 @@ const Navbar = () => {
     );
 };
 
-// Processar os dados para adicionar campos EN e PT
+// Processar os dados de Dark Souls para adicionar campos EN e PT
 const processedBosses: Boss[] = bosses.flatMap((game) =>
     game.bosses.map((boss) => {
         // Guardar o original como inglês
@@ -74,30 +76,37 @@ const processedBosses: Boss[] = bosses.flatMap((game) =>
     })
 );
 
+// Processar os dados de Elden Ring
+const processedEldenBosses: Boss[] = eldenBosses.flatMap((game) =>
+    game.bosses.map((boss) => {
+        // Os bosses de Elden Ring já vêm com todos os campos necessários
+        return {
+            ...boss,
+            game: boss.game,
+        };
+    })
+);
+
 // Função auxiliar para obter a imagem correta com base no nome do jogo
 const getGameImage = (gameName: string): string => {
-    const gameNameLower = gameName.toLowerCase();
-    if (
-        gameNameLower.includes("dark souls 1") ||
-        gameNameLower.includes("darksouls1") ||
-        gameNameLower === "dark souls"
-    ) {
-        return ds1Img;
-    } else if (
-        gameNameLower.includes("dark souls 2") ||
-        gameNameLower.includes("darksouls2")
-    ) {
-        return ds2Img;
-    } else if (
-        gameNameLower.includes("dark souls 3") ||
-        gameNameLower.includes("darksouls3")
-    ) {
-        return ds3Img;
+    switch (gameName) {
+        case "Dark Souls":
+            return ds1Img;
+        case "Dark Souls II":
+            return ds2Img;
+        case "Dark Souls III":
+            return ds3Img;
+        case "Elden Ring":
+            return endelRingImg;
+        default:
+            return defaultImg;
     }
-    return defaultImg;
 };
 
-const getBossOfTheDay = (): Boss => {
+const getBossOfTheDay = (isEldenMode: boolean = false): Boss => {
+    // Escolher o conjunto de dados correto com base no modo
+    const bossesData = isEldenMode ? processedEldenBosses : processedBosses;
+
     // Get current date in Brasilia time (UTC-3)
     const now = new Date();
     // Adjust to Brasilia time using proper timezone calculation
@@ -126,14 +135,211 @@ const getBossOfTheDay = (): Boss => {
         hash = (hash << 5) - hash + dateString.charCodeAt(i);
         hash = hash & hash;
     }
-    const index = Math.abs(hash) % processedBosses.length;
-    return processedBosses[index];
+    const index = Math.abs(hash) % bossesData.length;
+    return bossesData[index];
 };
 
 // Função para obter um boss aleatório para o minigame de imagem
 const getRandomBoss = (): Boss => {
     const randomIndex = Math.floor(Math.random() * processedBosses.length);
     return processedBosses[randomIndex];
+};
+
+// Define the Welcome Modal component
+const WelcomeModal = ({
+    onClose,
+    language,
+    isEldenMode,
+}: {
+    onClose: () => void;
+    language: "EN" | "PT";
+    isEldenMode: boolean;
+}) => {
+    return (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+            <div className="bg-gray-900 rounded-xl shadow-2xl p-6 max-w-xl w-full border border-gray-700 animate-fadeIn">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-bold text-yellow-400">
+                        {language === "PT"
+                            ? `Bem-vindo ao ${
+                                  isEldenMode ? "Eldendle" : "Bossdle"
+                              }!`
+                            : `Welcome to ${
+                                  isEldenMode ? "Eldendle" : "Bossdle"
+                              }!`}
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="text-gray-400 hover:text-white transition-colors"
+                    >
+                        <i className="bi bi-x-lg text-xl"></i>
+                    </button>
+                </div>
+
+                <div className="space-y-4 text-gray-300">
+                    <p>
+                        {language === "PT"
+                            ? isEldenMode
+                                ? "Eldendle é um jogo diário no estilo Wordle onde você tenta adivinhar o chefe de Elden Ring do dia."
+                                : "Bossdle é um jogo diário no estilo Wordle onde você tenta adivinhar o chefe de Dark Souls do dia."
+                            : isEldenMode
+                            ? "Eldendle is a daily Wordle-style game where you try to guess the Elden Ring boss of the day."
+                            : "Bossdle is a daily Wordle-style game where you try to guess the Dark Souls boss of the day."}
+                    </p>
+
+                    <div className="bg-gray-800 p-3 rounded-lg">
+                        <h3 className="font-semibold text-yellow-300 mb-2">
+                            {language === "PT" ? "Como jogar:" : "How to play:"}
+                        </h3>
+                        <ul className="list-disc pl-5 space-y-2">
+                            <li>
+                                {language === "PT"
+                                    ? "Tente adivinhar o nome do chefe usando a barra de pesquisa."
+                                    : "Try to guess the boss name using the search bar."}
+                            </li>
+                            <li>
+                                {language === "PT"
+                                    ? "Após cada tentativa, você verá quais características combinam com o chefe do dia."
+                                    : "After each guess, you'll see which characteristics match with the boss of the day."}
+                            </li>
+                            <li>
+                                {language === "PT"
+                                    ? "Células em verde significam uma combinação exata, em amarelo uma combinação parcial."
+                                    : "Green cells mean an exact match, yellow cells mean a partial match."}
+                            </li>
+                            <li>
+                                {language === "PT"
+                                    ? "Um novo chefe é selecionado todos os dias às 6h (horário de Brasília)."
+                                    : "A new boss is selected every day at 6 AM (Brasilia Time)."}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <button onClick={onClose} className="button">
+                            {language === "PT"
+                                ? "Começar a jogar!"
+                                : "Start playing!"}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Define the Bug Report Modal component
+const BugReportModal = ({
+    onClose,
+    language,
+}: {
+    onClose: () => void;
+    language: "EN" | "PT";
+}) => {
+    const [bugDescription, setBugDescription] = useState<string>("");
+    const [steps, setSteps] = useState<string>("");
+
+    const handleSubmit = () => {
+        // Format the message for WhatsApp
+        const message = `*Bug Report from Bossdle*\n\n*Description:*\n${bugDescription}\n\n*Steps to Reproduce:*\n${steps}`;
+
+        // Encode the message for URL
+        const encodedMessage = encodeURIComponent(message);
+
+        // Create WhatsApp link with the message
+        const whatsappUrl = `https://wa.me/5511991231629?text=${encodedMessage}`;
+
+        // Open WhatsApp in a new tab
+        window.open(whatsappUrl, "_blank");
+
+        // Close the modal
+        onClose();
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+            <div className="bg-gray-900 rounded-xl shadow-2xl p-6 max-w-xl w-full border border-gray-700 animate-fadeIn">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-bold text-yellow-400">
+                        {language === "PT" ? "Reportar um Bug" : "Report a Bug"}
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="text-gray-400 hover:text-white transition-colors"
+                    >
+                        <i className="bi bi-x-lg text-xl"></i>
+                    </button>
+                </div>
+
+                <div className="space-y-4 text-gray-300">
+                    <p>
+                        {language === "PT"
+                            ? "Por favor, descreva o bug que você encontrou. Isso nos ajudará a corrigi-lo rapidamente."
+                            : "Please describe the bug you've found. This will help us fix it quickly."}
+                    </p>
+
+                    <div className="space-y-3">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">
+                                {language === "PT"
+                                    ? "Descrição do bug:"
+                                    : "Bug description:"}
+                            </label>
+                            <textarea
+                                value={bugDescription}
+                                onChange={(e) =>
+                                    setBugDescription(e.target.value)
+                                }
+                                className="input min-h-[80px]"
+                                placeholder={
+                                    language === "PT"
+                                        ? "Descreva o problema..."
+                                        : "Describe the issue..."
+                                }
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">
+                                {language === "PT"
+                                    ? "Passos para reproduzir:"
+                                    : "Steps to reproduce:"}
+                            </label>
+                            <textarea
+                                value={steps}
+                                onChange={(e) => setSteps(e.target.value)}
+                                className="input min-h-[80px]"
+                                placeholder={
+                                    language === "PT"
+                                        ? "Como podemos reproduzir este bug?"
+                                        : "How can we reproduce this bug?"
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 mt-6">
+                        <button
+                            onClick={onClose}
+                            className="px-4 py-2 bg-gray-700 text-gray-300 rounded-full hover:bg-gray-600 transition-colors"
+                        >
+                            {language === "PT" ? "Cancelar" : "Cancel"}
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            className="button flex items-center gap-2"
+                            disabled={!bugDescription.trim()}
+                        >
+                            <i className="bi bi-whatsapp text-green-400"></i>
+                            {language === "PT"
+                                ? "Enviar via WhatsApp"
+                                : "Send via WhatsApp"}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 function App() {
@@ -153,14 +359,21 @@ function App() {
     console.log("Current Brasilia time:", brasiliaTime.toISOString());
     console.log("Date used for boss selection:", today);
 
-    const correctBoss: Boss = getBossOfTheDay();
+    // Novo estado para controlar o modo Eldendle
+    const [eldenMode, setEldenMode] = useState<boolean>(false);
+
+    // Obter o boss correto baseado no modo
+    const correctBoss: Boss = getBossOfTheDay(eldenMode);
 
     // Estado para armazenar o chefe anterior
     const [previousBoss, setPreviousBoss] = useState<string>("");
+    const [previousEldenBoss, setPreviousEldenBoss] = useState<string>("");
 
     const [guess, setGuess] = useState<string>("");
     const [guesses, setGuesses] = useState<Boss[]>(() => {
-        const savedState = localStorage.getItem("bossdleState");
+        const savedState = localStorage.getItem(
+            eldenMode ? "eldendleState" : "bossdleState"
+        );
         if (savedState) {
             const { lastPlayedDate, guesses, lastBoss } =
                 JSON.parse(savedState);
@@ -171,10 +384,16 @@ function App() {
             } else {
                 // Se for um novo dia, salvar o chefe anterior
                 if (lastBoss) {
-                    setPreviousBoss(lastBoss);
+                    if (eldenMode) {
+                        setPreviousEldenBoss(lastBoss);
+                    } else {
+                        setPreviousBoss(lastBoss);
+                    }
                 }
                 // Limpar o localStorage para o novo dia
-                localStorage.removeItem("bossdleState");
+                localStorage.removeItem(
+                    eldenMode ? "eldendleState" : "bossdleState"
+                );
                 return [];
             }
         }
@@ -184,7 +403,9 @@ function App() {
         { name: string; boss: Boss }[]
     >([]);
     const [gameOver, setGameOver] = useState<boolean>(() => {
-        const savedState = localStorage.getItem("bossdleState");
+        const savedState = localStorage.getItem(
+            eldenMode ? "eldendleState" : "bossdleState"
+        );
         if (savedState) {
             const { lastPlayedDate, gameOver } = JSON.parse(savedState);
             if (lastPlayedDate === today) {
@@ -194,7 +415,9 @@ function App() {
         return false;
     });
     const [won, setWon] = useState<boolean>(() => {
-        const savedState = localStorage.getItem("bossdleState");
+        const savedState = localStorage.getItem(
+            eldenMode ? "eldendleState" : "bossdleState"
+        );
         if (savedState) {
             const { lastPlayedDate, won } = JSON.parse(savedState);
             if (lastPlayedDate === today) {
@@ -204,6 +427,48 @@ function App() {
         return false;
     });
 
+    // Resetar estados quando mudar entre Bossdle e Eldendle
+    useEffect(() => {
+        // Carregar os dados salvos do modo correto
+        const savedState = localStorage.getItem(
+            eldenMode ? "eldendleState" : "bossdleState"
+        );
+
+        if (savedState) {
+            const { lastPlayedDate, guesses, gameOver, won, lastBoss } =
+                JSON.parse(savedState);
+
+            if (lastPlayedDate === today) {
+                setGuesses(guesses);
+                setGameOver(gameOver);
+                setWon(won);
+            } else {
+                setGuesses([]);
+                setGameOver(false);
+                setWon(false);
+                // Se for um novo dia, salvar o chefe anterior
+                if (lastBoss) {
+                    if (eldenMode) {
+                        setPreviousEldenBoss(lastBoss);
+                    } else {
+                        setPreviousBoss(lastBoss);
+                    }
+                }
+            }
+        } else {
+            // Sem estado salvo, resetar
+            setGuesses([]);
+            setGameOver(false);
+            setWon(false);
+        }
+
+        // Limpar outras coisas
+        setGuess("");
+        setSuggestions([]);
+        setViewMode(false);
+        setImageGameMode(false);
+    }, [eldenMode, today]);
+
     useEffect(() => {
         const state = {
             lastPlayedDate: today,
@@ -212,15 +477,23 @@ function App() {
             won,
             lastBoss: correctBoss.name, // Armazenar o nome do chefe atual para histórico
         };
-        localStorage.setItem("bossdleState", JSON.stringify(state));
-    }, [guesses, gameOver, won, today, correctBoss.name]);
+        localStorage.setItem(
+            eldenMode ? "eldendleState" : "bossdleState",
+            JSON.stringify(state)
+        );
+    }, [guesses, gameOver, won, today, correctBoss.name, eldenMode]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setGuess(value);
         if (value.length > 0) {
+            // Escolher o conjunto de dados correto com base no modo
+            const bossesData = eldenMode
+                ? processedEldenBosses
+                : processedBosses;
+
             const guessedBossNames = guesses.map((g) => g.name.toLowerCase());
-            const filteredBosses = processedBosses
+            const filteredBosses = bossesData
                 .filter((b) => {
                     // Buscar em todos os nomes disponíveis (inglês e português)
                     const nameMatches = b.name
@@ -261,8 +534,11 @@ function App() {
     const handleGuess = (guessValue: string) => {
         if (gameOver) return;
 
+        // Escolher o conjunto de dados correto com base no modo
+        const bossesData = eldenMode ? processedEldenBosses : processedBosses;
+
         // Procurar o chefe pelo nome em qualquer idioma
-        const selectedBoss = processedBosses.find(
+        const selectedBoss = bossesData.find(
             (b) =>
                 b.name.toLowerCase() === guessValue.toLowerCase() ||
                 (b.namePT &&
@@ -375,9 +651,6 @@ function App() {
         setLanguage((prevLang) => (prevLang === "EN" ? "PT" : "EN"));
     };
 
-    // Novo estado para controlar o modo Eldendle
-    const [eldenMode, setEldenMode] = useState<boolean>(false);
-
     // Função para mostrar o modo Eldendle
     const handleEldenModeClick = () => {
         setEldenMode(true);
@@ -388,6 +661,34 @@ function App() {
     // Função para voltar ao modo Bossdle
     const handleBossdleModeClick = () => {
         setEldenMode(false);
+        setImageGameMode(false);
+        setViewMode(false);
+    };
+
+    // Add state for welcome modal
+    const [showWelcomeModal, setShowWelcomeModal] = useState<boolean>(false);
+
+    // Check if this is the first visit
+    useEffect(() => {
+        const hasVisitedBefore = localStorage.getItem("bossdle_visited");
+        if (!hasVisitedBefore) {
+            setShowWelcomeModal(true);
+            localStorage.setItem("bossdle_visited", "true");
+        }
+    }, []);
+
+    // Function to close welcome modal
+    const handleCloseWelcomeModal = () => {
+        setShowWelcomeModal(false);
+    };
+
+    // Add state for bug report modal
+    const [showBugReportModal, setShowBugReportModal] =
+        useState<boolean>(false);
+
+    // Function to close bug report modal
+    const handleCloseBugReportModal = () => {
+        setShowBugReportModal(false);
     };
 
     // Navbar component with handlers
@@ -427,6 +728,28 @@ function App() {
                     </div>
                     <div className="flex items-center space-x-3">
                         <button
+                            onClick={() => setShowWelcomeModal(true)}
+                            className="px-2 py-1 rounded text-sm font-medium bg-gray-700 text-gray-300 hover:bg-gray-600 flex items-center"
+                            title={
+                                language === "PT" ? "Como jogar" : "How to play"
+                            }
+                        >
+                            <i className="bi bi-question-circle mr-1"></i>
+                            {language === "PT" ? "Ajuda" : "Help"}
+                        </button>
+                        <button
+                            onClick={() => setShowBugReportModal(true)}
+                            className="px-2 py-1 rounded text-sm font-medium bg-gray-700 text-gray-300 hover:bg-gray-600 flex items-center"
+                            title={
+                                language === "PT"
+                                    ? "Reportar um bug"
+                                    : "Report a bug"
+                            }
+                        >
+                            <i className="bi bi-bug mr-1"></i>
+                            {language === "PT" ? "Reportar Bug" : "Report Bug"}
+                        </button>
+                        <button
                             onClick={() => setLanguage("EN")}
                             className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                                 language === "EN"
@@ -452,48 +775,240 @@ function App() {
         );
     };
 
-    // Se estiver no modo Eldendle, exibe a mensagem de "em construção"
+    // Se estiver no modo Eldendle real (não a página "em construção")
+    // Este é o jogo completo de Eldendle, não apenas a mensagem de "em construção"
     if (eldenMode) {
         return (
             <div className="flex flex-col items-center min-h-screen justify-between">
                 <NavbarWithHandlers />
-                <div className="card max-w-2xl">
+                <div className="card">
                     <h1 className="title">Eldendle</h1>
-                    <div className="flex flex-col items-center p-8">
-                        <div className="w-24 h-24 mb-6 animate-pulse">
-                            <img
-                                src={iconImg}
-                                alt="Eldendle"
-                                className="w-full h-full"
-                                onError={(e) => {
-                                    e.currentTarget.src = defaultImg;
-                                }}
-                            />
-                        </div>
-                        <h2 className="text-2xl font-bold text-yellow-400 mb-4">
+                    {previousEldenBoss && (
+                        <p className="text-sm mb-2 text-center text-gray-400">
                             {language === "PT"
-                                ? "Em Construção"
-                                : "Coming Soon"}
-                        </h2>
-                        <p className="text-xl text-center text-gray-300 mb-6">
-                            {language === "PT"
-                                ? "Em breve, um novo jogo focado nos chefes de Elden Ring chegará aqui!"
-                                : "Soon, a new game focused on Elden Ring bosses will be available here!"}
+                                ? "Chefe do dia anterior: "
+                                : "Previous day's boss: "}
+                            {previousEldenBoss}
                         </p>
-                        <p className="text-lg text-center text-gray-400">
-                            {language === "PT"
-                                ? "Volte em breve para conferir!"
-                                : "Check back soon!"}
-                        </p>
+                    )}
+                    <p className="text-center mb-4 text-gray-300">
+                        {language === "PT"
+                            ? "Adivinhe o chefe de Elden Ring do dia!"
+                            : "Guess the Elden Ring boss of the day!"}
+                    </p>
+
+                    <div className="mb-6 relative">
+                        <input
+                            type="text"
+                            value={guess}
+                            onChange={handleInputChange}
+                            onKeyPress={handleKeyPress}
+                            className="input"
+                            placeholder={
+                                language === "PT"
+                                    ? "Digite o nome do chefe..."
+                                    : "Enter boss name..."
+                            }
+                            disabled={gameOver}
+                        />
+                        {suggestions.length > 0 && (
+                            <ul className="suggestions">
+                                {suggestions.map((suggestion) => (
+                                    <li
+                                        key={suggestion.name}
+                                        className="suggestion-item flex items-center p-2"
+                                        onClick={() => {
+                                            setGuess(suggestion.name);
+                                            setSuggestions([]);
+                                            handleGuess(suggestion.name);
+                                        }}
+                                    >
+                                        <img
+                                            src={suggestion.boss.image}
+                                            alt={suggestion.name}
+                                            className="w-8 h-8 mr-2 rounded-full object-cover border border-gray-700 shadow-sm"
+                                            onError={(e) => {
+                                                e.currentTarget.src =
+                                                    getGameImage(
+                                                        suggestion.boss.game
+                                                    );
+                                            }}
+                                        />
+                                        <span>{suggestion.name}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                         <button
-                            onClick={handleBossdleModeClick}
-                            className="button mt-8"
+                            onClick={() => handleGuess(guess)}
+                            className="button mt-3"
+                            disabled={gameOver}
                         >
                             {language === "PT"
-                                ? "Voltar para Bossdle"
-                                : "Back to Bossdle"}
+                                ? "Enviar Palpite"
+                                : "Submit Guess"}
                         </button>
+
+                        {/* Attempt counter below search bar */}
+                        <p className="text-center mt-2 text-gray-300">
+                            {guesses.length > 0 ? (
+                                <span>
+                                    {guesses.length}{" "}
+                                    {language === "PT"
+                                        ? "tentativa"
+                                        : "attempt"}
+                                    {guesses.length > 1
+                                        ? language === "PT"
+                                            ? "s"
+                                            : "s"
+                                        : ""}
+                                </span>
+                            ) : null}
+                        </p>
                     </div>
+
+                    {/* Cabeçalho */}
+                    <div className="flex gap-2 mb-2">
+                        {/* Cabeçalho da coluna de imagem - fixado com largura exata */}
+                        <div
+                            className="flex-shrink-0"
+                            style={{ width: "96px" }}
+                        >
+                            <div className="grid-header h-10">
+                                <div className="wrapped-text">
+                                    {language === "PT" ? "Imagem" : "Image"}
+                                </div>
+                            </div>
+                        </div>
+                        {/* Cabeçalho das outras colunas */}
+                        <div className="grid grid-cols-10 gap-2 flex-grow">
+                            <div className="col-span-2 grid-header h-10">
+                                <div className="wrapped-text">
+                                    {language === "PT" ? "Chefe" : "Boss"}
+                                </div>
+                            </div>
+                            <div className="col-span-2 grid-header h-10">
+                                <div className="wrapped-text">
+                                    {language === "PT" ? "Jogo" : "Game"}
+                                </div>
+                            </div>
+                            <div className="col-span-2 grid-header h-10">
+                                <div className="wrapped-text">
+                                    {language === "PT"
+                                        ? "Localização"
+                                        : "Location"}
+                                </div>
+                            </div>
+                            <div className="col-span-1 grid-header h-10">
+                                <div className="wrapped-text">DLC?</div>
+                            </div>
+                            <div className="col-span-1 grid-header h-10">
+                                <div className="wrapped-text">
+                                    {language === "PT"
+                                        ? "Opcional?"
+                                        : "Optional?"}
+                                </div>
+                            </div>
+                            <div className="col-span-2 grid-header h-10">
+                                <div className="wrapped-text">
+                                    {language === "PT"
+                                        ? "Lembrança"
+                                        : "Remembrance"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Inverter a ordem para mostrar o palpite mais recente primeiro */}
+                    {[...guesses].reverse().map((g, i) => (
+                        <GuessRow
+                            key={i}
+                            guess={g}
+                            correctBoss={correctBoss}
+                            language={language}
+                        />
+                    ))}
+                    <GuessRow
+                        guess={null}
+                        correctBoss={correctBoss}
+                        language={language}
+                    />
+
+                    {gameOver && (
+                        <div className="mt-6 text-center">
+                            {won && (
+                                <>
+                                    <p className="text-2xl text-green-500">
+                                        {language === "PT" ? (
+                                            <>
+                                                Parabéns! Você acertou o chefe:{" "}
+                                                {correctBoss.name} em{" "}
+                                                {guesses.length} tentativa
+                                                {guesses.length > 1 ? "s" : ""}!
+                                            </>
+                                        ) : (
+                                            <>
+                                                Congratulations! You got the
+                                                boss: {correctBoss.name} in{" "}
+                                                {guesses.length} attempt
+                                                {guesses.length > 1 ? "s" : ""}!
+                                            </>
+                                        )}
+                                    </p>
+                                    <img
+                                        src={correctBoss.image}
+                                        alt={correctBoss.name}
+                                        className="mx-auto mt-4 max-w-xs rounded-lg shadow-md"
+                                        onError={(e) => {
+                                            e.currentTarget.src = getGameImage(
+                                                correctBoss.game
+                                            );
+                                        }}
+                                    />
+                                </>
+                            )}
+                            <p className="mt-4 text-gray-300">
+                                {language === "PT"
+                                    ? "Volte amanhã para um novo desafio!"
+                                    : "Come back tomorrow for a new challenge!"}
+                            </p>
+                            <div className="flex flex-wrap gap-2 mt-4 justify-center">
+                                <button
+                                    onClick={handleViewInitialPage}
+                                    className="button"
+                                >
+                                    {language === "PT"
+                                        ? "Ver Estado Atual"
+                                        : "View Current State"}
+                                </button>
+                                <button
+                                    onClick={handleStartImageGame}
+                                    className="button"
+                                >
+                                    {language === "PT"
+                                        ? "Adivinhe o Chefe pela Imagem"
+                                        : "Guess the Boss by Image"}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Welcome Modal */}
+                    {showWelcomeModal && (
+                        <WelcomeModal
+                            onClose={handleCloseWelcomeModal}
+                            language={language}
+                            isEldenMode={true}
+                        />
+                    )}
+
+                    {/* Bug Report Modal */}
+                    {showBugReportModal && (
+                        <BugReportModal
+                            onClose={handleCloseBugReportModal}
+                            language={language}
+                        />
+                    )}
                 </div>
                 <Footer />
             </div>
@@ -754,6 +1269,23 @@ function App() {
                             </div>
                         </div>
                     )}
+
+                    {/* Welcome Modal */}
+                    {showWelcomeModal && (
+                        <WelcomeModal
+                            onClose={handleCloseWelcomeModal}
+                            language={language}
+                            isEldenMode={false}
+                        />
+                    )}
+
+                    {/* Bug Report Modal */}
+                    {showBugReportModal && (
+                        <BugReportModal
+                            onClose={handleCloseBugReportModal}
+                            language={language}
+                        />
+                    )}
                 </div>
                 <Footer />
             </div>
@@ -810,6 +1342,23 @@ function App() {
                                 : "Guess the Boss by Image"}
                         </button>
                     </div>
+
+                    {/* Welcome Modal */}
+                    {showWelcomeModal && (
+                        <WelcomeModal
+                            onClose={handleCloseWelcomeModal}
+                            language={language}
+                            isEldenMode={false}
+                        />
+                    )}
+
+                    {/* Bug Report Modal */}
+                    {showBugReportModal && (
+                        <BugReportModal
+                            onClose={handleCloseBugReportModal}
+                            language={language}
+                        />
+                    )}
                 </div>
                 <Footer />
             </div>
@@ -1014,6 +1563,23 @@ function App() {
                             </button>
                         </div>
                     </div>
+                )}
+
+                {/* Welcome Modal */}
+                {showWelcomeModal && (
+                    <WelcomeModal
+                        onClose={handleCloseWelcomeModal}
+                        language={language}
+                        isEldenMode={false}
+                    />
+                )}
+
+                {/* Bug Report Modal */}
+                {showBugReportModal && (
+                    <BugReportModal
+                        onClose={handleCloseBugReportModal}
+                        language={language}
+                    />
                 )}
             </div>
             <Footer />

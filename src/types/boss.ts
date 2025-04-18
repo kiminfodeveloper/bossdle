@@ -11,5 +11,7 @@ export interface Boss {
     soulDrop: string;
     soulDropEN?: string;
     soulDropPT?: string;
+    rewardType?: string;
+    rewardDetails?: string;
     image: string;
 }

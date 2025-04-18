@@ -3,6 +3,7 @@ import { Boss } from "../types/boss";
 import ds1Img from "../imgs/ds1.png";
 import ds2Img from "../imgs/ds2.jpg";
 import ds3Img from "../imgs/ds3.png";
+import endelRingImg from "../imgs/endelring.webp";
 import defaultImg from "../imgs/default.png";
 
 interface GuessRowProps {
@@ -13,15 +14,66 @@ interface GuessRowProps {
 
 // Helper function to extract drop type from soulDrop string
 const getDropType = (soulDrop: string): string => {
-    if (soulDrop.includes("Arma") || soulDrop.includes("Weapon")) return "Arma";
-    if (soulDrop.includes("Anel") || soulDrop.includes("Ring")) return "Anel";
+    if (!soulDrop) return "Nenhum";
+
+    const types = [];
+
+    if (
+        soulDrop.includes("Arma") ||
+        soulDrop.includes("Weapon") ||
+        soulDrop.includes("Espada") ||
+        soulDrop.includes("Sword") ||
+        soulDrop.includes("Lança") ||
+        soulDrop.includes("Spear") ||
+        soulDrop.includes("Machado") ||
+        soulDrop.includes("Axe") ||
+        soulDrop.includes("Martelo") ||
+        soulDrop.includes("Hammer") ||
+        soulDrop.includes("Arco") ||
+        soulDrop.includes("Bow") ||
+        soulDrop.includes("Katana")
+    ) {
+        types.push("Arma");
+    }
+
+    if (soulDrop.includes("Anel") || soulDrop.includes("Ring")) {
+        types.push("Anel");
+    }
+
     if (
         soulDrop.includes("Magia") ||
         soulDrop.includes("Magic") ||
-        soulDrop.includes("Spell")
-    )
-        return "Magia";
-    return "Nenhum";
+        soulDrop.includes("Spell") ||
+        soulDrop.includes("Sorcery") ||
+        soulDrop.includes("Feitiço") ||
+        soulDrop.includes("Milagre") ||
+        soulDrop.includes("Miracle") ||
+        soulDrop.includes("Piromanc")
+    ) {
+        types.push("Magia");
+    }
+
+    if (
+        soulDrop.includes("Armadura") ||
+        soulDrop.includes("Armor") ||
+        soulDrop.includes("Armour") ||
+        soulDrop.includes("Helmet") ||
+        soulDrop.includes("Capacete") ||
+        soulDrop.includes("Set") ||
+        soulDrop.includes("Conjunto")
+    ) {
+        types.push("Armadura");
+    }
+
+    if (soulDrop.includes("Escudo") || soulDrop.includes("Shield")) {
+        types.push("Escudo");
+    }
+
+    if (types.length === 0) {
+        return "Outro";
+    }
+
+    return types.join(" - ");
 };
 
 // Função para obter o nome baseado no idioma
@@ -69,6 +121,64 @@ const getLocalizedSoulDrop = (
     return boss.soulDrop;
 };
 
+// Função para obter o tipo de recompensa baseado no idioma
+const getRewardType = (boss: Boss | null): string => {
+    if (!boss || !boss.rewardType) return "";
+    return boss.rewardType;
+};
+
+// Helper function to get the soul drop color
+const getSoulDropColor = (
+    guessDrop: string,
+    correctDrop: string,
+    guessRewardType: string,
+    correctRewardType: string
+): string => {
+    // Se são exatamente iguais, verde
+    if (guessDrop === correctDrop) return "bg-green-500";
+
+    // Se não tem nada, vermelho
+    if (!guessDrop || !correctDrop) return "bg-red-500";
+
+    // Se os tipos de recompensa são iguais, amarelo
+    if (guessRewardType && correctRewardType) {
+        const guessRewardTypes = guessRewardType.split(" / ");
+        const correctRewardTypes = correctRewardType.split(" / ");
+
+        // Verificar se há sobreposição entre os tipos de recompensa
+        for (const guessType of guessRewardTypes) {
+            for (const correctType of correctRewardTypes) {
+                // Se pelo menos um tipo de recompensa coincide, amarelo
+                if (
+                    guessType.includes(correctType) ||
+                    correctType.includes(guessType)
+                ) {
+                    return "bg-yellow-500";
+                }
+            }
+        }
+    }
+
+    const guessTypes = getDropType(guessDrop);
+    const correctTypes = getDropType(correctDrop);
+
+    // Se os tipos são iguais mas não o texto exato, amarelo
+    if (guessTypes === correctTypes) return "bg-yellow-500";
+
+    // Se há alguma interseção entre os tipos
+    const guessTypesArray = guessTypes.split(" - ");
+    const correctTypesArray = correctTypes.split(" - ");
+
+    for (const type of guessTypesArray) {
+        if (correctTypesArray.includes(type)) {
+            return "bg-yellow-500";
+        }
+    }
+
+    // Sem correspondência
+    return "bg-red-500";
+};
+
 const getCellColor = (
     key: string,
     value: any,
@@ -84,15 +194,19 @@ const getCellColor = (
         return guessName === correctName ? "bg-green-500" : "bg-red-500";
     }
 
-    // Special case for soulDrop - compare only the type
+    // Special case for soulDrop - compare with more nuance
     if (key === "soulDrop") {
         const guessDrop = getLocalizedSoulDrop(guess, language);
         const correctDrop = getLocalizedSoulDrop(correctBoss, language);
-        const guessDropType = getDropType(guessDrop);
-        const correctDropType = getDropType(correctDrop);
-        return guessDropType === correctDropType
-            ? "bg-green-500"
-            : "bg-red-500";
+        const guessRewardType = getRewardType(guess);
+        const correctRewardType = getRewardType(correctBoss);
+
+        return getSoulDropColor(
+            guessDrop,
+            correctDrop,
+            guessRewardType,
+            correctRewardType
+        );
     }
 
     if (key === "location") {
@@ -114,8 +228,10 @@ const getGameImage = (game: string): string => {
         return ds2Img;
     } else if (game === "Dark Souls 3") {
         return ds3Img;
+    } else if (game === "Elden Ring") {
+        return endelRingImg;
     }
-    return ds1Img; // Default fallback
+    return defaultImg; // Default fallback
 };
 
 const GuessRow: React.FC<GuessRowProps> = ({
@@ -127,6 +243,7 @@ const GuessRow: React.FC<GuessRowProps> = ({
     const localizedName = getLocalizedName(guess, language);
     const localizedLocation = getLocalizedLocation(guess, language);
     const localizedSoulDrop = getLocalizedSoulDrop(guess, language);
+    const rewardType = getRewardType(guess);
 
     return (
         <div className="mb-4 flex gap-2 items-center">
@@ -270,7 +387,11 @@ const GuessRow: React.FC<GuessRowProps> = ({
                     title={localizedSoulDrop || ""}
                 >
                     <div className="wrapped-text">
-                        {guess ? getDropType(localizedSoulDrop) : ""}
+                        {guess && rewardType
+                            ? rewardType
+                            : guess
+                            ? getDropType(localizedSoulDrop)
+                            : ""}
                     </div>
                 </div>
             </div>
