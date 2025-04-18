@@ -50,6 +50,14 @@ const Footer: React.FC = () => {
                         <i className="bi bi-youtube text-red-500"></i> YouTube
                     </a>
                     <a
+                        href="https://www.twitch.tv/lovem0n3y16"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="button flex items-center gap-2"
+                    >
+                        <i className="bi bi-twitch text-purple-400"></i> Twitch
+                    </a>
+                    <a
                         href="https://www.tiktok.com/@lovem0n3y16"
                         target="_blank"
                         rel="noopener noreferrer"

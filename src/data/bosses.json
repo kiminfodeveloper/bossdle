@@ -505,7 +505,7 @@
                 "location": "High Wall of Lothric",
                 "isDLC": false,
                 "isOptional": false,
-                "soulDrop": "Nenhum",
+                "soulDrop": "Arma (Vordt's Great Hammer)",
                 "image": "https://i.imgur.com/hsS8Kr3.jpeg"
             },
             {
@@ -545,7 +545,7 @@
                 "location": "Catacombs of Carthus",
                 "isDLC": false,
                 "isOptional": false,
-                "soulDrop": "Nenhum",
+                "soulDrop": "Arma (Wolnir's Holy Sword)",
                 "image": "https://i.imgur.com/iWI2LVq.jpeg"
             },
             {
@@ -561,7 +561,7 @@
                 "location": "Irithyll of the Boreal Valley",
                 "isDLC": false,
                 "isOptional": false,
-                "soulDrop": "Arma (Greatsword of Judgment)",
+                "soulDrop": "Arma (Greatsword of Judgment ou Pontiff's Left Eye)",
                 "image": "https://i.imgur.com/SYA4mzR.jpeg"
             },
             {
@@ -593,7 +593,7 @@
                 "location": "Lothric Castle",
                 "isDLC": false,
                 "isOptional": false,
-                "soulDrop": "Nenhum",
+                "soulDrop": "Arma (Dragonslayer Greataxe) ou Escudo (Dragonslayer Greatshield)",
                 "image": "https://i.imgur.com/oBQudvN.jpeg"
             },
             {
@@ -609,7 +609,7 @@
                 "location": "Untended Graves",
                 "isDLC": false,
                 "isOptional": true,
-                "soulDrop": "Nenhum",
+                "soulDrop": "Arma (Gundyr's Halberd) ou Anel (Prisoner's Chain)",
                 "image": "https://i.imgur.com/Gm8b1ty.jpeg"
             },
             {
@@ -641,7 +641,7 @@
                 "location": "Kiln of the Flame",
                 "isDLC": false,
                 "isOptional": false,
-                "soulDrop": "Nenhum",
+                "soulDrop": "Arma (Firelink Greatsword) ou Magia (Sunlight Spear)",
                 "image": "https://i.imgur.com/h2cexvU.jpeg"
             },
             {

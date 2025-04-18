@@ -139,7 +139,9 @@ function App() {
         }
         return [];
     });
-    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [suggestions, setSuggestions] = useState<
+        { name: string; boss: Boss }[]
+    >([]);
     const [gameOver, setGameOver] = useState<boolean>(() => {
         const savedState = localStorage.getItem("bossdleState");
         if (savedState) {
@@ -177,7 +179,7 @@ function App() {
         setGuess(value);
         if (value.length > 0) {
             const guessedBossNames = guesses.map((g) => g.name.toLowerCase());
-            const filtered = processedBosses
+            const filteredBosses = processedBosses
                 .filter((b) => {
                     // Buscar em todos os nomes disponíveis (inglês e português)
                     const nameMatches = b.name
@@ -200,12 +202,16 @@ function App() {
                         !alreadyGuessed
                     );
                 })
-                .map((b) => {
-                    // Retornar o nome no idioma atual
-                    return language === "PT" && b.namePT ? b.namePT : b.name;
-                })
                 .slice(0, 5);
-            setSuggestions(filtered);
+
+            // Transformar para incluir o objeto boss completo
+            const suggestionItems = filteredBosses.map((boss) => ({
+                name:
+                    language === "PT" && boss.namePT ? boss.namePT : boss.name,
+                boss: boss,
+            }));
+
+            setSuggestions(suggestionItems);
         } else {
             setSuggestions([]);
         }
@@ -243,7 +249,7 @@ function App() {
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             if (suggestions.length > 0) {
-                const firstSuggestion = suggestions[0];
+                const firstSuggestion = suggestions[0].name;
                 setGuess(firstSuggestion);
                 handleGuess(firstSuggestion);
             } else if (guess) {
@@ -289,11 +295,13 @@ function App() {
                         </p>
                     )}
                     <img
-                        src={getGameImage(correctBoss.game)}
-                        alt={correctBoss.game}
+                        src={correctBoss.image}
+                        alt={correctBoss.name}
                         className="mx-auto mt-4 max-w-xs rounded-lg shadow-md"
                         onError={(e) => {
-                            e.currentTarget.src = defaultImg;
+                            e.currentTarget.src = getGameImage(
+                                correctBoss.game
+                            );
                         }}
                     />
                     <p className="mt-4 text-center text-gray-300">
@@ -362,17 +370,27 @@ function App() {
                     />
                     {suggestions.length > 0 && (
                         <ul className="suggestions">
-                            {suggestions.map((s) => (
+                            {suggestions.map((suggestion) => (
                                 <li
-                                    key={s}
-                                    className="suggestion-item"
+                                    key={suggestion.name}
+                                    className="suggestion-item flex items-center p-2"
                                     onClick={() => {
-                                        setGuess(s);
+                                        setGuess(suggestion.name);
                                         setSuggestions([]);
-                                        handleGuess(s);
+                                        handleGuess(suggestion.name);
                                     }}
                                 >
-                                    {s}
+                                    <img
+                                        src={suggestion.boss.image}
+                                        alt={suggestion.name}
+                                        className="w-8 h-8 mr-2 rounded-full object-cover border border-gray-700 shadow-sm"
+                                        onError={(e) => {
+                                            e.currentTarget.src = getGameImage(
+                                                suggestion.boss.game
+                                            );
+                                        }}
+                                    />
+                                    <span>{suggestion.name}</span>
                                 </li>
                             ))}
                         </ul>
@@ -483,11 +501,13 @@ function App() {
                                     )}
                                 </p>
                                 <img
-                                    src={getGameImage(correctBoss.game)}
-                                    alt={correctBoss.game}
+                                    src={correctBoss.image}
+                                    alt={correctBoss.name}
                                     className="mx-auto mt-4 max-w-xs rounded-lg shadow-md"
                                     onError={(e) => {
-                                        e.currentTarget.src = defaultImg;
+                                        e.currentTarget.src = getGameImage(
+                                            correctBoss.game
+                                        );
                                     }}
                                 />
                             </>

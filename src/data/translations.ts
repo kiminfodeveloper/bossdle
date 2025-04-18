@@ -97,4 +97,14 @@ export const soulDropTranslations: Record<string, string> = {
     "Magia (Lifehunt Scythe)": "Magia (Foice Caça-Vidas)",
     "Arma (Dancer's Enchanted Swords)":
         "Arma (Espadas Encantadas da Dançarina)",
+    "Arma (Vordt's Great Hammer)": "Arma (Grande Martelo de Vordt)",
+    "Arma (Greatsword of Judgment ou Pontiff's Left Eye)":
+        "Arma (Espada do Julgamento ou Olho Esquerdo do Pontífice)",
+    "Arma (Wolnir's Holy Sword)": "Arma (Espada Sagrada de Wolnir)",
+    "Arma (Gundyr's Halberd) ou Anel (Prisoner's Chain)":
+        "Arma (Alabarda de Gundyr) ou Anel (Corrente do Prisioneiro)",
+    "Arma (Dragonslayer Greataxe) ou Escudo (Dragonslayer Greatshield)":
+        "Arma (Machado Grande do Caçador de Dragões) ou Escudo (Escudo Grande do Caçador de Dragões)",
+    "Arma (Firelink Greatsword) ou Magia (Sunlight Spear)":
+        "Arma (Espada Grande do Vínculo de Fogo) ou Magia (Lança Solar)",
 };

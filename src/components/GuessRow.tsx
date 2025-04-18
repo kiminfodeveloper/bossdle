@@ -99,7 +99,6 @@ const getCellColor = (
         const guessLocation = getLocalizedLocation(guess, language);
         const correctLocation = getLocalizedLocation(correctBoss, language);
         if (guessLocation === correctLocation) return "bg-green-500";
-        if (guess.game === correctBoss.game) return "bg-yellow-500";
         return "bg-red-500";
     }
 
@@ -160,7 +159,25 @@ const GuessRow: React.FC<GuessRowProps> = ({
                     )}`}
                     title={localizedName || ""}
                 >
-                    <div className="wrapped-text">{localizedName || ""}</div>
+                    <div className="wrapped-text">
+                        {localizedName && (
+                            <div className="flex items-center">
+                                <img
+                                    src={guess?.image || ""}
+                                    alt={localizedName}
+                                    className="w-6 h-6 mr-2 rounded-full object-cover border border-gray-700 shadow-sm"
+                                    onError={(e) => {
+                                        if (guess) {
+                                            e.currentTarget.src = getGameImage(
+                                                guess.game
+                                            );
+                                        }
+                                    }}
+                                />
+                                <span>{localizedName}</span>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Jogo (2 colunas) */}
