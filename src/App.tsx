@@ -7,11 +7,46 @@ import defaultImg from "./imgs/default.png";
 import ds1Img from "./imgs/ds1.png";
 import ds2Img from "./imgs/ds2.jpg";
 import ds3Img from "./imgs/ds3.png";
+import iconImg from "./imgs/icon.webp";
 import {
     bossNameTranslations,
     locationTranslations,
     soulDropTranslations,
 } from "./data/translations";
+
+// Navbar component
+const Navbar = () => {
+    return (
+        <nav className="w-full bg-gray-900 shadow-md px-4 py-3 mb-6 flex items-center">
+            <div className="container mx-auto flex justify-between items-center">
+                <div className="flex items-center">
+                    <img
+                        src={iconImg}
+                        alt="Bossdle Logo"
+                        className="h-10 w-10 mr-3"
+                        onError={(e) => {
+                            e.currentTarget.src = defaultImg;
+                        }}
+                    />
+                </div>
+                <div className="flex space-x-6">
+                    <a
+                        href="#"
+                        className="text-white font-bold text-xl hover:text-yellow-400 transition-colors"
+                    >
+                        Bossdle
+                    </a>
+                    <a
+                        href="#"
+                        className="text-gray-400 font-bold text-xl hover:text-yellow-400 transition-colors"
+                    >
+                        Eldendle
+                    </a>
+                </div>
+            </div>
+        </nav>
+    );
+};
 
 // Processar os dados para adicionar campos EN e PT
 const processedBosses: Boss[] = bosses.flatMap((game) =>
@@ -340,9 +375,135 @@ function App() {
         setLanguage((prevLang) => (prevLang === "EN" ? "PT" : "EN"));
     };
 
+    // Novo estado para controlar o modo Eldendle
+    const [eldenMode, setEldenMode] = useState<boolean>(false);
+
+    // Função para mostrar o modo Eldendle
+    const handleEldenModeClick = () => {
+        setEldenMode(true);
+        setImageGameMode(false);
+        setViewMode(false);
+    };
+
+    // Função para voltar ao modo Bossdle
+    const handleBossdleModeClick = () => {
+        setEldenMode(false);
+    };
+
+    // Navbar component with handlers
+    const NavbarWithHandlers = () => {
+        return (
+            <nav className="w-full bg-gray-900 shadow-md px-4 py-3 mb-6 flex items-center">
+                <div className="container mx-auto flex justify-between items-center">
+                    <div className="flex items-center">
+                        <img
+                            src={iconImg}
+                            alt="Bossdle Logo"
+                            className="h-10 w-10 mr-3"
+                            onError={(e) => {
+                                e.currentTarget.src = defaultImg;
+                            }}
+                        />
+                    </div>
+                    <div className="flex space-x-6">
+                        <a
+                            href="#"
+                            onClick={handleBossdleModeClick}
+                            className={`font-bold text-xl hover:text-yellow-400 transition-colors ${
+                                !eldenMode ? "text-white" : "text-gray-400"
+                            }`}
+                        >
+                            Bossdle
+                        </a>
+                        <a
+                            href="#"
+                            onClick={handleEldenModeClick}
+                            className={`font-bold text-xl hover:text-yellow-400 transition-colors ${
+                                eldenMode ? "text-white" : "text-gray-400"
+                            }`}
+                        >
+                            Eldendle
+                        </a>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                        <button
+                            onClick={() => setLanguage("EN")}
+                            className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                language === "EN"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                            }`}
+                        >
+                            English
+                        </button>
+                        <button
+                            onClick={() => setLanguage("PT")}
+                            className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                language === "PT"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                            }`}
+                        >
+                            Português-BR
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        );
+    };
+
+    // Se estiver no modo Eldendle, exibe a mensagem de "em construção"
+    if (eldenMode) {
+        return (
+            <div className="flex flex-col items-center min-h-screen justify-between">
+                <NavbarWithHandlers />
+                <div className="card max-w-2xl">
+                    <h1 className="title">Eldendle</h1>
+                    <div className="flex flex-col items-center p-8">
+                        <div className="w-24 h-24 mb-6 animate-pulse">
+                            <img
+                                src={iconImg}
+                                alt="Eldendle"
+                                className="w-full h-full"
+                                onError={(e) => {
+                                    e.currentTarget.src = defaultImg;
+                                }}
+                            />
+                        </div>
+                        <h2 className="text-2xl font-bold text-yellow-400 mb-4">
+                            {language === "PT"
+                                ? "Em Construção"
+                                : "Coming Soon"}
+                        </h2>
+                        <p className="text-xl text-center text-gray-300 mb-6">
+                            {language === "PT"
+                                ? "Em breve, um novo jogo focado nos chefes de Elden Ring chegará aqui!"
+                                : "Soon, a new game focused on Elden Ring bosses will be available here!"}
+                        </p>
+                        <p className="text-lg text-center text-gray-400">
+                            {language === "PT"
+                                ? "Volte em breve para conferir!"
+                                : "Check back soon!"}
+                        </p>
+                        <button
+                            onClick={handleBossdleModeClick}
+                            className="button mt-8"
+                        >
+                            {language === "PT"
+                                ? "Voltar para Bossdle"
+                                : "Back to Bossdle"}
+                        </button>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+
     if (imageGameMode) {
         return (
             <div className="flex flex-col items-center min-h-screen justify-between">
+                <NavbarWithHandlers />
                 <div className="card">
                     <h1 className="title">
                         {language === "PT"
@@ -602,6 +763,7 @@ function App() {
     if (gameOver && won && !viewMode) {
         return (
             <div className="flex flex-col items-center min-h-screen justify-between">
+                <NavbarWithHandlers />
                 <div className="card">
                     <h1 className="title">Dark Souls Bossdle</h1>
                     {previousBoss && (
@@ -656,36 +818,19 @@ function App() {
 
     return (
         <div className="flex flex-col items-center min-h-screen justify-between">
+            <NavbarWithHandlers />
             <div className="card">
                 <h1 className="title">Dark Souls Bossdle</h1>
                 {previousBoss && (
                     <p className="text-sm mb-2 text-center text-gray-400">
-                        Chefe do dia anterior: {previousBoss}#1
+                        Chefe do dia anterior: {previousBoss}
                     </p>
                 )}
                 <p className="text-center mb-4 text-gray-300">
-                    Adivinhe o chefe de Dark Souls do dia!
+                    {language === "PT"
+                        ? "Adivinhe o chefe de Dark Souls do dia!"
+                        : "Guess the Dark Souls boss of the day!"}
                 </p>
-
-                {/* Seletor de idioma */}
-                <div className="flex justify-center mb-4">
-                    <button
-                        className={`button mr-2 ${
-                            language === "EN" ? "bg-blue-600" : "bg-blue-800"
-                        }`}
-                        onClick={() => setLanguage("EN")}
-                    >
-                        English
-                    </button>
-                    <button
-                        className={`button ${
-                            language === "PT" ? "bg-blue-600" : "bg-blue-800"
-                        }`}
-                        onClick={() => setLanguage("PT")}
-                    >
-                        Português
-                    </button>
-                </div>
 
                 <div className="mb-6 relative">
                     <input
